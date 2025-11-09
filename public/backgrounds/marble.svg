@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="2048" height="2048" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- dark base -->
+    <linearGradient id="gBase" x1="0" x2="1">
+      <stop offset="0" stop-color="#070707"/>
+      <stop offset="1" stop-color="#0f0f0f"/>
+    </linearGradient>
+
+    <!-- gold tint for veins -->
+    <linearGradient id="goldVein" x1="0" x2="1">
+      <stop offset="0" stop-color="#f9eecd" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#f6e4b0" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <filter id="marbleNoise" x="-50%" y="-50%" width="200%" height="200%">
+      <feTurbulence baseFrequency="0.0085" numOctaves="4" seed="7" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+      <feColorMatrix type="saturate" values="0.7"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#gBase)"/>
+
+  <!-- subtle gold veins -->
+  <g filter="url(#marbleNoise)" opacity="0.28" mix-blend-mode="screen">
+    <path d="M-200 450 C300 220, 700 560, 1150 420 S1900 520, 2400 430" stroke="url(#goldVein)" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M-200 950 C250 820, 700 1100, 1200 980 S1900 1030, 2400 950" stroke="url(#goldVein)" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M-200 1400 C300 1240, 800 1500, 1350 1360 S1950 1480, 2400 1400" stroke="url(#goldVein)" stroke-width="12" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- faint texture -->
+  <g opacity="0.06" fill="none" stroke="#ffffff">
+    <path d="M0 0 L2048 0 L2048 2048 L0 2048 Z"/>
+  </g>
+</svg>

@@ -17,11 +17,8 @@ export const useApp = create<State>((set, get) => ({
 
   toggle: (id) => {
     const s = new Set(get().selected);
-    if (s.has(id)) {
-      s.delete(id);
-    } else {
-      s.add(id);
-    }
+    if (s.has(id)) s.delete(id);
+    else s.add(id);
     set({ selected: s, activeTier: null, activePackage: null });
   },
 
@@ -42,5 +39,5 @@ export const useApp = create<State>((set, get) => ({
       set({ activePackage: pkgId, activeTier: null });
     }
     set({ selected: s });
-  },
+  }
 }));

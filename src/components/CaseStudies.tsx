@@ -9,32 +9,27 @@ export default function CaseStudies() {
       copy: "Cinematic ordering app and responsive menu with real-time pricing and premium UX. Elevated brand presence and streamlined operations.",
       stack: "Vite • Tailwind • Configurator",
       img: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80",
-      steps: ["Problem: Manual pricing", "Solution: Responsive menu + realtime updates", "Impact: Faster orders, happier patrons"],
+      steps: ["Problem: Manual pricing","Solution: Responsive menu + realtime updates","Impact: Faster orders, happier patrons"]
     },
     {
       title: "📈 Trading platform",
       copy: "Secure, scalable trading environment built from scratch. Performance-first, compliance-aware, and designed for clarity and trust.",
       stack: "Node.js • React • NestJS",
       img: "https://images.unsplash.com/photo-1649972904340-9f2a2e264d8d?auto=format&fit=crop&w=1200&q=80",
-      steps: ["Problem: Unclear dashboards", "Solution: Clarity-first UI + secure core", "Impact: Confident decisions"],
+      steps: ["Problem: Unclear dashboards","Solution: Clarity-first UI + secure core","Impact: Confident decisions"]
     },
     {
       title: "⚖️ RKM Attorneys",
       copy: "Luxury‑grade digital presence for a leading law firm. WhatsApp booking, venue photo gallery, shimmering hero, and glowing leadership cards create trust and seamless client engagement.",
       stack: "Next.js • Tailwind • Framer Motion",
       img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80",
-      steps: ["Problem: Outdated digital presence", "Solution: Luxury website with WhatsApp booking + gallery", "Impact: Elevated brand trust and seamless engagement"],
-    },
+      steps: ["Problem: Outdated digital presence","Solution: Luxury website with WhatsApp booking + gallery","Impact: Elevated brand trust and seamless engagement"]
+    }
   ];
 
   return (
     <section id="case-studies" className="mx-auto max-w-6xl px-6 py-20 fade-up">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
         <h3 className="text-2xl text-center">Case studies</h3>
         <p className="text-white/70 mt-3 text-center max-w-2xl mx-auto">
           Flagship projects delivered with luxury-grade DNA, trust, and bulletproof polish.

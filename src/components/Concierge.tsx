@@ -13,9 +13,13 @@ export default function Concierge() {
           e.preventDefault();
           const transcript = Array.from(document.querySelectorAll("#chatLog > div")).map(d => d.textContent?.trim()).join(" | ");
           const msg = encodeURIComponent(
-            `Blueprint request:\nTranscript: ${transcript || "N/A"}\nEmail: giftk.rantho@gmail\nLinkedIn: www.linkedin.com/in/gift-rantho\nGitHub: https://github.com/DrMcGi`
+`Blueprint request:
+Transcript: ${transcript || "N/A"}
+Email: giftk.rantho@gmail
+LinkedIn: www.linkedin.com/in/gift-rantho
+GitHub: https://github.com/DrMcGi`
           );
-          window.open(`https://wa.me/27649211745?text=${msg}`, "_blank");
+          window.open(`https://wa.me/27649211745?text=${msg}`, "blank");
         }}
       >
         <span>💬</span> Concierge

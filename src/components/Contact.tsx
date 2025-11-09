@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import BackgroundManager from "@/components/BackgroundManager";
+import GoldDivider from "@/components/GoldDivider";
+import ShimmerText from "@/components/ShimmerText";
 
 const fmt = new Intl.NumberFormat("en-US");
 
@@ -19,20 +22,20 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="mx-auto max-w-6xl px-6 py-20 fade-up">
+    <section id="contact" className="relative mx-auto max-w-6xl px-6 py-20 fade-up">
+      <BackgroundManager variant="noise" />
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="glass-glow p-10 rounded-2xl"
+        className="glass-glow p-10 rounded-2xl relative"
       >
-        <h3 className="text-3xl text-center">Request a blueprint</h3>
+        <h3 className="text-3xl text-center"><ShimmerText>Request a blueprint</ShimmerText></h3>
         <p className="text-white/80 mt-4 text-center max-w-2xl mx-auto">
           Share your vision. We’ll respond with a strategic plan, investment range, and next steps.
         </p>
 
-        {/* Progress */}
         <div className="mt-8">
           <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
             <div
@@ -43,7 +46,6 @@ export default function Contact() {
           <p className="text-xs text-white/60 mt-2 text-center">Step {step} of 4</p>
         </div>
 
-        {/* Form */}
         <form
           id="blueprintForm"
           className="mt-10 space-y-6"
@@ -67,7 +69,6 @@ export default function Contact() {
             setStep(1);
           }}
         >
-          {/* Step 1 */}
           {step === 1 && (
             <div className="step">
               <label className="text-sm text-white/70">Name</label>
@@ -79,7 +80,6 @@ export default function Contact() {
             </div>
           )}
 
-          {/* Step 2 */}
           {step === 2 && (
             <div className="step">
               <label className="text-sm text-white/70">Email</label>
@@ -92,7 +92,6 @@ export default function Contact() {
             </div>
           )}
 
-          {/* Step 3 */}
           {step === 3 && (
             <div className="step">
               <label className="text-sm text-white/70">Project type</label>
@@ -105,7 +104,7 @@ export default function Contact() {
               </div>
 
               <label className="text-sm text-white/70 mt-4 block">Budget range</label>
-              <input id="budgetRange" type="range" name="budget" min="50000" max="200000" step="5000" className="w-full accent-yellow-300" />
+              <input id="budgetRange" type="range" name="budget" min="50000" max="2000000" step="5000" className="w-full accent-yellow-300" />
               <p id="budgetLabel" className="text-xs text-white/60 mt-1">~ 50,000 ZAR</p>
 
               <label className="text-sm text-white/70 mt-4 block">Timeline</label>
@@ -122,7 +121,6 @@ export default function Contact() {
             </div>
           )}
 
-          {/* Step 4 */}
           {step === 4 && (
             <div className="step">
               <label className="text-sm text-white/70">Message</label>
@@ -131,11 +129,10 @@ export default function Contact() {
                 rows={6}
                 className="mt-2 w-full p-3 rounded-md bg-gray-800/60 border border-white/10 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                 required
-              ></textarea>
+              />
             </div>
           )}
 
-          {/* Nav buttons */}
           <div className="flex justify-between mt-8">
             <button
               type="button"
@@ -153,7 +150,6 @@ export default function Contact() {
             </button>
           </div>
 
-          {/* Submit + WhatsApp */}
           <div className={`mt-8 flex gap-4 justify-center ${step === 4 ? "" : "hidden"}`}>
             <button type="submit" className="px-6 py-3 rounded-md bg-white text-gray-900 font-medium hover:opacity-90">
               Send request
@@ -168,13 +164,11 @@ export default function Contact() {
                 const fd = new FormData(form);
                 const payload = Object.fromEntries(fd.entries());
                 const msg = encodeURIComponent(
-                  `Blueprint via WhatsApp:
+`Blueprint via WhatsApp:
 Name: ${payload.name || ""}
 Email: ${payload.email || ""}
 Project: ${payload.project || ""}
-Budget: ${
-                    payload.budget ? fmt.format(parseInt(payload.budget as string)) + " ZAR" : ""
-                  }
+Budget: ${payload.budget ? fmt.format(parseInt(payload.budget as string)) + " ZAR" : ""}
 Timeline: ${payload.timeline || ""}
 Message: ${payload.message || ""}`
                 );
@@ -189,6 +183,8 @@ Message: ${payload.message || ""}`
         <p className="mt-6 text-xs text-white/50 text-center">Secure • Confidential • No spam</p>
         <div id="formSuccess" className="hidden mt-6 p-4 rounded-md bg-white/5 border border-white/10 text-center text-white/80"></div>
       </motion.div>
+
+      <GoldDivider />
     </section>
   );
 }
