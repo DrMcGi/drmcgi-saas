@@ -26,9 +26,9 @@ body { @apply bg-gray-900 text-white antialiased; }
   content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px; border-radius: 2px;
   background: linear-gradient(90deg, var(--gold), var(--gold-soft));
   box-shadow: 0 0 12px rgba(245,208,111,0.8), 0 0 24px rgba(245,208,111,0.6), 0 0 36px rgba(245,208,111,0.4);
-  animation: glowPulse 3s ease-in-out infinite;
+  animation: glowPulseToken 3s ease-in-out infinite;
 }
-@keyframes glowPulse {
+@keyframes glowPulseToken {
   0%,100% { box-shadow: 0 0 12px rgba(245,208,111,0.8), 0 0 24px rgba(245,208,111,0.6), 0 0 36px rgba(245,208,111,0.4); }
   50%     { box-shadow: 0 0 20px rgba(245,208,111,1), 0 0 40px rgba(245,208,111,0.8), 0 0 60px rgba(245,208,111,0.6); }
 }
@@ -76,9 +76,21 @@ body { @apply bg-gray-900 text-white antialiased; }
 .gradient-gold { background: linear-gradient(90deg, var(--gold) 0%, var(--gold-soft) 100%); }
 .gradient-neon { background: linear-gradient(90deg, var(--neon-a) 0%, var(--neon-b) 100%); }
 
-/* Luxury divider animation (used by GoldDivider if needed) */
+/* Luxury divider animation */
 @keyframes dividerGlow {
   0% { opacity: 0.55; transform: scaleX(0.98); }
   50% { opacity: 1; transform: scaleX(1); }
   100% { opacity: 0.55; transform: scaleX(0.98); }
+}
+
+/* Price glow pulse (Configurator total) */
+@keyframes glowPulse {
+  0%,100% { text-shadow: 0 0 12px rgba(245,208,111,0.6); }
+  50%     { text-shadow: 0 0 24px rgba(245,208,111,1); }
+}
+
+/* Holographic rotation for hero overlay */
+@keyframes holoShift {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
 import { useApp } from "@/lib/store";
+import BackgroundManager from "@/components/BackgroundManager";
+import GoldDivider from "@/components/GoldDivider";
+import ShimmerText from "@/components/ShimmerText";
 
 type Feature = {
   id: string;
@@ -57,17 +61,26 @@ export default function Configurator() {
   const percent = Math.round((selected.size / FEATURES.length) * 100);
   const milestone = selected.size >= 12 ? "Legacy" : selected.size >= 8 ? "Luxury" : selected.size >= 4 ? "Scale" : "Foundation";
 
+  // Confetti burst when milestone crosses into Luxury/Legacy
+  useEffect(() => {
+    if (milestone === "Luxury" || milestone === "Legacy") {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    }
+  }, [milestone]);
+
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16 fade-up">
+    <section className="relative mx-auto max-w-6xl px-6 py-16 fade-up">
+      <BackgroundManager variant="marble" />
+
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 relative"
       >
         <div className="md:col-span-2 p-6 rounded-xl border border-white/10 bg-gray-800/40">
-          <h3 className="text-xl">Custom build configurator</h3>
+          <h3 className="text-xl"><ShimmerText>Custom build configurator</ShimmerText></h3>
           <p className="text-white/80 mt-2">Select features. See impact. Request a blueprint.</p>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4" id="moduleList">
@@ -82,9 +95,7 @@ export default function Configurator() {
                   transition={{ delay: i * 0.05 }}
                   onClick={() => toggle(f.id)}
                   className={`text-left p-4 rounded-lg border transition ${
-                    active
-                      ? "border-(--gold) bg-gray-800 shadow-(--edge)"
-                      : "border-white/10 bg-gray-800/30 hover:border-white/20 hover:bg-gray-800/40"
+                    active ? "border-(--gold) bg-gray-800 shadow-(--edge)" : "border-white/10 bg-gray-800/30 hover:border-white/20 hover:bg-gray-800/40"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -100,58 +111,14 @@ export default function Configurator() {
         </div>
 
         <div className="p-6 rounded-xl border border-white/10 bg-gray-800/40">
-          <h4 className="text-lg">Estimated investment</h4>
+          <h4 className="text-lg"><ShimmerText>Estimated investment</ShimmerText></h4>
           <div className="mt-4">
             <div
-              className="text-3xl bg-clip-text text-transparent"
+              className="text-3xl bg-clip-text text-transparent animate-[glowPulse_3s_ease_in_out_infinite]"
               style={{ backgroundImage: "linear-gradient(90deg, var(--gold) 0%, var(--gold-soft) 100%)" }}
             >
               {fmt.format(totals.total)} ZAR
             </div>
-
-            <button
-              className="mt-2 text-xs text-white/60 hover:text-white transition"
-              onClick={() => {
-                const b = document.getElementById("breakdown");
-                if (b) b.classList.toggle("hidden");
-              }}
-            >
-              View breakdown ▼
-            </button>
-
-            <div id="breakdown" className="hidden mt-4 text-sm text-white/80 space-y-2">
-              {[...selected].map((id) => {
-                const f = FEATURES.find((x) => x.id === id)!;
-                return (
-                  <div key={id} className="grid grid-cols-[1fr_auto] gap-3">
-                    <div>• {f.name}</div>
-                    <div className="text-white/60">{fmt.format(f.price)} ZAR</div>
-                  </div>
-                );
-              })}
-              <div className="border-t border-white/10 mt-2" />
-              <div className="grid grid-cols-[1fr_auto] gap-3">
-                <div>Subtotal</div>
-                <div className="text-white/60">{fmt.format(totals.base)} ZAR</div>
-              </div>
-              <div className="grid grid-cols-[1fr_auto] gap-3">
-                <div>Premium</div>
-                <div className="text-white/60">{fmt.format(totals.premium)} ZAR</div>
-              </div>
-              <div className="border-t border-white/10" />
-              <div className="grid grid-cols-[1fr_auto] gap-3 font-medium">
-                <div>Total</div>
-                <div className="text-white">{fmt.format(totals.total)} ZAR</div>
-              </div>
-            </div>
-
-            <p className="text-white/60 mt-3 text-xs">Tip: Packages auto‑add features; fine‑tune everything here.</p>
-            <a
-              href="#contact"
-              className="mt-6 inline-block px-4 py-2 rounded-md bg-white text-gray-900 text-sm hover:opacity-90 transition"
-            >
-              Request a blueprint
-            </a>
 
             <div className="mt-6 space-y-2">
               <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden" title="Blueprint completion">
@@ -163,6 +130,8 @@ export default function Configurator() {
           </div>
         </div>
       </motion.div>
+
+      <GoldDivider />
     </section>
   );
 }

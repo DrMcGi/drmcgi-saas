@@ -23,7 +23,9 @@ export default function Hero() {
     <section className="relative overflow-hidden">
       <BackgroundManager variant="hero" />
       <MotionBackgrounds />
-      <div id="heroHolo" className="hero-holo" />
+
+      {/* Holographic overlay with rotation */}
+      <div id="heroHolo" className="hero-holo animate-[holoShift_12s_linear_infinite]" />
 
       <motion.div
         initial={{ opacity: 0, y: 40 }}
