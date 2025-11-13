@@ -27,7 +27,7 @@ const CASES: Study[] = [
     copy: "Institutional-grade trading dashboard with clarity-first data visualisation and compliance-ready audit trails.",
     stack: "Next.js • NestJS • PostgreSQL",
     stats: ["Assets ↑2.1x", "Downtime 0.01%", "Teams onboarded 6"],
-    img: "https://images.unsplash.com/photo-1649972904340-9f2a2e264d8d?auto=format&fit=crop&w=1200&q=80",
+    img: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80",
     steps: ["Problem: Fragmented trading tools","Solution: Unified real-time platform","Impact: Confident decision velocity"]
   },
   {

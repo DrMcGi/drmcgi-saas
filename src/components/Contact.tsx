@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import BackgroundManager from "@/components/BackgroundManager";
 import ShimmerText from "@/components/ShimmerText";
@@ -9,6 +9,9 @@ const fmt = new Intl.NumberFormat("en-US");
 export default function Contact() {
   const [step, setStep] = useState(1);
   const [budget, setBudget] = useState(65000);
+  const [pending, setPending] = useState(false);
+  const [bannerMessage, setBannerMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fieldTransition = { type: "spring", stiffness: 260, damping: 24 } as const;
   const fieldHover = { y: -4 } as const;
   const fieldFocus = {
@@ -46,17 +49,39 @@ export default function Contact() {
         <form
           id="blueprintForm"
           className="mt-12 space-y-8"
-          onSubmit={(event) => {
+          onSubmit={async (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-            const banner = document.getElementById("formSuccess");
-            if (banner) {
-              banner.textContent = `Thank you ${data.name || ""}. Your concierge blueprint is in motion.`;
-              banner.classList.remove("hidden");
+            setPending(true);
+            setBannerMessage(null);
+            setErrorMessage(null);
+
+            const form = event.currentTarget;
+            const formData = new FormData(form);
+
+            try {
+              const response = await fetch("/api/contact", {
+                method: "POST",
+                body: formData
+              });
+
+              const result = await response.json().catch(() => ({}));
+
+              if (!response.ok) {
+                setErrorMessage(result?.error ?? "We couldn't dispatch your blueprint. Please try again.");
+                setPending(false);
+                return;
+              }
+
+              const name = (formData.get("name") as string | null) ?? "";
+              setBannerMessage(name ? `Thank you ${name}. Your concierge blueprint is in motion.` : "Your concierge blueprint is in motion.");
+              form.reset();
+              setStep(1);
+              setBudget(65000);
+            } catch {
+              setErrorMessage("Network issue prevented the send. Please retry.");
+            } finally {
+              setPending(false);
             }
-            (event.target as HTMLFormElement).reset();
-            setStep(1);
-            setBudget(65000);
           }}
         >
           {step === 1 && (
@@ -184,7 +209,9 @@ export default function Contact() {
 
           {step === 4 && (
             <div className="flex flex-wrap justify-center gap-4">
-              <button type="submit" className="btn-gold text-xs">Send request</button>
+              <button type="submit" className="btn-gold text-xs" disabled={pending}>
+                {pending ? "Sending…" : "Send request"}
+              </button>
               <a
                 id="waShortcut"
                 href="#"
@@ -213,7 +240,17 @@ Message: ${payload.message || ""}`
         </form>
 
         <p className="mt-10 text-xs uppercase tracking-[0.4em] text-white/50 text-center">Secure • Confidential • White-glove</p>
-        <div id="formSuccess" className="hidden mt-6 rounded-2xl border border-white/10 bg-[rgba(8,12,18,0.6)] px-5 py-4 text-center text-white/80" />
+        {errorMessage ? (
+          <div className="mt-6 rounded-2xl border border-red-300/40 bg-[rgba(24,8,12,0.72)] px-5 py-4 text-center text-red-200 text-sm uppercase tracking-[0.3em]">
+            {errorMessage}
+          </div>
+        ) : null}
+
+        {bannerMessage ? (
+          <div className="mt-6 rounded-2xl border border-white/10 bg-[rgba(8,12,18,0.6)] px-5 py-4 text-center text-white/80 text-sm uppercase tracking-[0.3em]">
+            {bannerMessage}
+          </div>
+        ) : null}
       </motion.div>
     </section>
   );
