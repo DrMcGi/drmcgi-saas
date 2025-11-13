@@ -1,0 +1,23 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="silkBase" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#04060D"/>
+      <stop offset="1" stop-color="#020309"/>
+    </linearGradient>
+    <radialGradient id="silkSheen" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(420 280) rotate(54) scale(560 620)">
+      <stop offset="0" stop-color="#FFE7C0" stop-opacity="0.4"/>
+      <stop offset="0.38" stop-color="#F7D87B" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#04060D" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="silkSheen2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1040 520) rotate(40) scale(620 480)">
+      <stop offset="0" stop-color="#74D0FF" stop-opacity="0.4"/>
+      <stop offset="0.4" stop-color="#74D0FF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#020308" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1400" height="900" fill="url(#silkBase)"/>
+  <rect width="1400" height="900" fill="url(#silkSheen)"/>
+  <rect width="1400" height="900" fill="url(#silkSheen2)"/>
+  <path d="M-40 480C160 340 340 380 520 480C700 580 920 640 1160 520C1280 460 1400 360 1400 360V960H-40V480Z" fill="#FFE7C0" fill-opacity="0.08"/>
+  <path d="M120 640C320 540 500 600 700 580C900 560 1080 460 1300 520" stroke="#FFE7C0" stroke-opacity="0.18" stroke-width="2" stroke-linecap="round" stroke-dasharray="14 32"/>
+</svg>

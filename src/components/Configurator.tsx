@@ -1,11 +1,10 @@
+// src/components/Configurator.tsx
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useSpring, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useApp } from "@/lib/store";
 import BackgroundManager from "@/components/BackgroundManager";
-import GoldDivider from "@/components/GoldDivider";
-import SectionHeader from "@/components/SectionHeader";
 
 type Feature = {
   id: string;
@@ -39,19 +38,34 @@ const FEATURES: Feature[] = [
 
 const fmt = new Intl.NumberFormat("en-US");
 
+function AnimatedAmount({ value, suffix = " ZAR", className }: { value: number; suffix?: string; className?: string }) {
+  const spring = useSpring(value, { stiffness: 120, damping: 22, mass: 0.7 });
+  const [display, setDisplay] = useState(value);
+
+  useEffect(() => {
+    spring.set(value);
+  }, [spring, value]);
+
+  useEffect(() => {
+    const unsubscribe = spring.on("change", (latest) => {
+      setDisplay(Math.round(latest));
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [spring]);
+
+  return (
+    <span className={className} aria-live="polite">
+      {fmt.format(display)}
+      {suffix ?? ""}
+    </span>
+  );
+}
+
 export default function Configurator() {
   const { selected, toggle } = useApp();
   const [showBreakdown, setShowBreakdown] = useState(false);
-
-  useEffect(() => {
-    const els = document.querySelectorAll(".fade-up");
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
-      { threshold: 0.15 }
-    );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
 
   const totals = useMemo(() => {
     const base = FEATURES.reduce((sum, f) => sum + (selected.has(f.id) ? f.price : 0), 0);
@@ -59,6 +73,8 @@ export default function Configurator() {
     const premium = Math.round(premiumRate * base);
     return { base, premium, total: base + premium, premiumRate };
   }, [selected]);
+
+  const selectedFeatures = useMemo(() => FEATURES.filter((f) => selected.has(f.id)), [selected]);
 
   const percent = Math.round((selected.size / FEATURES.length) * 100);
   const milestone =
@@ -73,108 +89,139 @@ export default function Configurator() {
   }, [milestone]);
 
   return (
-    <section id="pricing" className="relative mx-auto max-w-6xl px-6 py-16 fade-up">
-      <BackgroundManager variant="marble" />
+    <section id="configurator" className="relative mx-auto max-w-6xl px-6 py-24">
+      <BackgroundManager variant="configurator" />
 
-      <SectionHeader
-        title="Custom build configurator"
-        subtitle="Select features, see the investment, and request your blueprint."
-      />
+      <div className="grid gap-10 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.9 }}
+          className="space-y-3"
+        >
+          <p className="overline">Configurable couture</p>
+          <h2 className="text-3xl md:text-4xl">Compose your build with modules tuned for legacy impact.</h2>
+          <p className="text-white/70 max-w-2xl">
+            Toggle modules to craft a signature blueprint. Pricing updates in real time, including concierge uplift when
+            we blend luxury UI and AI experiences.
+          </p>
+        </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 relative"
-      >
-        {/* Feature selection */}
-        <div className="md:col-span-2 p-6 rounded-xl border border-white/10 bg-gray-800/40">
-          <h4 className="text-lg">Select features</h4>
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4" id="moduleList">
-            {FEATURES.map((f, i) => {
-              const active = selected.has(f.id);
-              return (
-                <motion.button
-                  key={f.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  onClick={() => toggle(f.id)}
-                  className={`text-left p-4 rounded-lg border transition ${
-                    active
-                      ? "border-(--gold) bg-gray-800 shadow-(--edge)"
-                      : "border-white/10 bg-gray-800/30 hover:border-white/20 hover:bg-gray-800/40"
-                  }`}
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.9, delay: 0.1 }}
+            className="section-frame bg-transparent"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" id="moduleList">
+              {FEATURES.map((f, i) => {
+                const active = selected.has(f.id);
+                return (
+                  <motion.button
+                    key={f.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: false, amount: 0.3 }}
+                    transition={{ delay: i * 0.03 }}
+                    onClick={() => toggle(f.id)}
+                    className={`text-left package-card ${active ? "is-active" : ""}`}
+                  >
+                    <span className="package-badge">{f.category}</span>
+                    <h4>{f.name}</h4>
+                    <p>{f.desc}</p>
+                    <span className="package-luxe">{fmt.format(f.price)} ZAR</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <motion.aside
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="section-frame bg-transparent flex flex-col gap-6"
+          >
+            <div>
+              <p className="overline">Investment ledger</p>
+              <h3 className="text-2xl"><AnimatedAmount value={totals.total} /></h3>
+              <button
+                className="mt-3 text-xs uppercase tracking-[0.32em] text-white/60 hover:text-white/90"
+                onClick={() => setShowBreakdown((s) => !s)}
+                aria-expanded={showBreakdown}
+                aria-controls="investmentBreakdown"
+              >
+                {showBreakdown ? "Hide breakdown" : "View breakdown"}
+              </button>
+            </div>
+
+            <AnimatePresence initial={false}>
+              {showBreakdown && (
+                <motion.div
+                  id="investmentBreakdown"
+                  key="ledger-breakdown"
+                  initial={{ opacity: 0, y: 12, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: "auto" }}
+                  exit={{ opacity: 0, y: 12, height: 0 }}
+                  transition={{ duration: 0.38, ease: "easeOut" }}
+                  className="investment-breakdown"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{f.name}</span>
-                    <span className="text-white/60 text-sm">{fmt.format(f.price)} ZAR</span>
+                  <div className="breakdown-row">
+                    <span>Base features</span>
+                    <AnimatedAmount value={totals.base} className="breakdown-amount" />
                   </div>
-                  <p className="text-white/70 text-sm mt-2">{f.desc}</p>
-                  <div className="mt-2 text-xs text-white/50">Category: {f.category}</div>
-                </motion.button>
-              );
-            })}
-          </div>
+                  <div className="breakdown-row">
+                    <span>Concierge uplift {Math.round(totals.premiumRate * 100)}%</span>
+                    <AnimatedAmount value={totals.premium} className="breakdown-amount" />
+                  </div>
+                  <div className="breakdown-total">
+                    <span>Total</span>
+                    <AnimatedAmount value={totals.total} className="breakdown-amount" />
+                  </div>
+                  <div className="breakdown-features" aria-live="polite">
+                    <span className="breakdown-label">Selected modules ({selectedFeatures.length})</span>
+                    {selectedFeatures.length > 0 ? (
+                      <ul>
+                        {selectedFeatures.map((feature) => (
+                          <li key={feature.id} className="feature-tag">
+                            <span className="feature-tag-dot" aria-hidden />
+                            <span>
+                              {feature.name}
+                              <span className="feature-tag-price"> · {fmt.format(feature.price)} ZAR</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="breakdown-empty">No modules selected yet—toggle a card to start crafting.</p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="space-y-2">
+              <div className="contact-progress" title="Blueprint completion">
+                <span style={{ width: `${percent}%` }} />
+              </div>
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.32em] text-white/60">
+                <span>{percent}% sculpted</span>
+                <span>{milestone}</span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-[rgba(8,12,18,0.7)] p-4 space-y-2 text-xs tracking-[0.28em] uppercase text-white/60">
+              <div>• Dedicated technical director</div>
+              <div>• Concierge launch rehearsal</div>
+              <div>• Post-launch growth council</div>
+            </div>
+          </motion.aside>
         </div>
-
-        {/* Investment panel with breakdown toggle */}
-        <div className="p-6 rounded-xl border border-white/10 bg-gray-800/40">
-          <h4 className="text-lg">Estimated investment</h4>
-
-          {/* Total with glow pulse */}
-          <div
-            className="mt-3 text-3xl bg-clip-text text-transparent animate-[glowPulse_3s_ease_in_out_infinite]"
-            style={{ backgroundImage: "linear-gradient(90deg, var(--gold) 0%, var(--gold-soft) 100%)" }}
-          >
-            {fmt.format(totals.total)} ZAR
-          </div>
-
-          {/* Breakdown toggle */}
-          <button
-            className="mt-3 text-xs text-white/70 hover:text-white underline underline-offset-4"
-            onClick={() => setShowBreakdown((s) => !s)}
-            aria-expanded={showBreakdown}
-          >
-            {showBreakdown ? "Hide breakdown" : "View breakdown"}
-          </button>
-
-          {showBreakdown && (
-            <div className="mt-3 space-y-3">
-              <div className="flex justify-between text-sm text-white/70">
-                <span>Base features</span>
-                <span>{fmt.format(totals.base)} ZAR</span>
-              </div>
-              <div className="flex justify-between text-sm text-white/70">
-                <span>Premium uplift {Math.round(totals.premiumRate * 100)}%</span>
-                <span>{fmt.format(totals.premium)} ZAR</span>
-              </div>
-              <div className="border-t border-white/10 my-2"></div>
-              <div className="flex justify-between text-sm text-white/90">
-                <span>Total</span>
-                <span>{fmt.format(totals.total)} ZAR</span>
-              </div>
-            </div>
-          )}
-
-          {/* Progress + milestone */}
-          <div className="mt-6 space-y-2">
-            <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden" title="Blueprint completion">
-              <div className="h-2 bg-linear-to-r from-yellow-300 to-yellow-100" style={{ width: `${percent}%` }} />
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-white/60">{percent}% complete</span>
-              <span className="text-white/80">{milestone}</span>
-            </div>
-          </div>
-
-          {/* Keep CTAs minimal: single premium CTA only in Hero */}
-        </div>
-      </motion.div>
-
-      <GoldDivider />
+      </div>
     </section>
   );
 }

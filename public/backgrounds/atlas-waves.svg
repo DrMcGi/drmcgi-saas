@@ -1,0 +1,23 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="atlasBg" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#030712"/>
+      <stop offset="1" stop-color="#04060C"/>
+    </linearGradient>
+    <linearGradient id="atlasRibbon" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#74D0FF" stop-opacity="0.4"/>
+      <stop offset="0.5" stop-color="#8FF1E6" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFE7B4" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="atlasVeil" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#FFE8C0" stop-opacity="0.38"/>
+      <stop offset="0.5" stop-color="#F7D87B" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#74D0FF" stop-opacity="0.24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#atlasBg)"/>
+  <path d="M-80 540C120 420 280 440 480 520C680 600 820 620 1000 520C1180 420 1340 360 1620 440V940H-80V540Z" fill="url(#atlasRibbon)" fill-opacity="0.24"/>
+  <path d="M-40 700C200 620 420 660 640 620C860 580 1100 460 1360 500C1540 528 1680 600 1680 600V980H-40V700Z" fill="url(#atlasVeil)" fill-opacity="0.2"/>
+  <path d="M200 320C360 200 520 240 720 340C920 440 1080 440 1320 320" stroke="#FFE7C0" stroke-opacity="0.24" stroke-width="2" stroke-linecap="round" stroke-dasharray="12 32"/>
+  <path d="M320 420C520 300 760 340 960 420C1160 500 1320 500 1500 420" stroke="#7BD7FF" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round" stroke-dasharray="16 40"/>
+</svg>

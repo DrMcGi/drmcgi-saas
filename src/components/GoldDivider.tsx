@@ -1,6 +1,4 @@
-// src/components/GoldDivider.tsx
 "use client";
-
 import Image from "next/image";
 
 export default function GoldDivider() {
@@ -13,7 +11,6 @@ export default function GoldDivider() {
           fill
           sizes="192px"
           className="object-contain opacity-80"
-          priority={false}
         />
       </div>
     </div>

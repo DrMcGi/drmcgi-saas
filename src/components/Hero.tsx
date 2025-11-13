@@ -1,5 +1,4 @@
 "use client";
-import jsPDF from "jspdf";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import BackgroundManager from "@/components/BackgroundManager";
@@ -7,78 +6,107 @@ import MotionBackgrounds from "@/components/MotionBackgrounds";
 import ShimmerText from "@/components/ShimmerText";
 import GoldDivider from "@/components/GoldDivider";
 
+const TICKER = [
+  "92% client retention",
+  "Continental launches across 3 regions",
+  "Average ROI x6 within 9 months"
+];
+
 export default function Hero() {
   useEffect(() => {
-    const holo = document.getElementById("heroHolo");
-    const move = (e: MouseEvent) => {
-      const x = ((e.clientX / window.innerWidth) - 0.5) * 10;
-      const y = ((e.clientY / window.innerHeight) - 0.5) * 10;
-      if (holo) holo.style.transform = `translate(${x}px, ${y}px)`;
+    const shell = document.querySelector<HTMLElement>(".hero-shell");
+    const listener = (event: MouseEvent) => {
+      if (!shell) return;
+      const x = (event.clientX / window.innerWidth) * 100;
+      const y = (event.clientY / window.innerHeight) * 100;
+      shell.style.setProperty("--pointer-x", `${x}%`);
+      shell.style.setProperty("--pointer-y", `${y}%`);
     };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+    window.addEventListener("mousemove", listener);
+    return () => window.removeEventListener("mousemove", listener);
   }, []);
 
   return (
-    <section className="relative overflow-hidden">
+    <section id="home" className="hero-shell">
       <BackgroundManager variant="hero" />
       <MotionBackgrounds />
-
-      {/* Holographic overlay with rotation */}
-      <div id="heroHolo" className="hero-holo animate-[holoShift_12s_linear_infinite]" />
+      <div className="hero-caustics" aria-hidden />
 
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="mx-auto max-w-5xl px-6 py-24 relative"
+        transition={{ duration: 0.9 }}
+        className="hero-content"
       >
-        <div className="glass-glow px-8 py-16 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-5xl md:text-6xl leading-tight breath"
-          >
-            Luxury software.<br />
+        <motion.span
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+          className="hero-kicker"
+        >
+          Luxury SaaS atelier for iconic brands
+        </motion.span>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.9 }}
+          className="hero-title"
+        >
+          <span className="block">Luxury software.</span>
+          <span className="block">
             <ShimmerText>Real business impact.</ShimmerText>
-          </motion.h1>
+          </span>
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-6 max-w-2xl mx-auto text-white/80 text-lg"
-          >
-            We don’t ship features. We orchestrate experiences that feel inevitable—from MVP to enterprise scale.
-          </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.8 }}
+          className="hero-subtitle"
+        >
+          We don&apos;t ship features. We orchestrate experiences that feel inevitable—from MVP to enterprise scale.
+        </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-10 flex gap-4 justify-center"
-          >
-            <a href="#pricing" className="px-5 py-3 rounded-md bg-white text-gray-900 text-sm font-medium hover:opacity-90 transition">
-              Explore tiers
-            </a>
-            <a href="#contact" className="px-5 py-3 rounded-md border border-white/20 text-white text-sm hover:border-white/40 transition">
-              Request a blueprint
-            </a>
-            <button
-              onClick={() => {
-                const doc = new jsPDF();
-                doc.text("Blueprint Summary", 15, 15);
-                doc.save("blueprint.pdf");
-              }}
-              className="px-5 py-3 rounded-md border border-white/20 text-white text-sm hover:border-white/40 transition"
-              title="Export PDF"
-            >
-              🧾
-            </button>
-          </motion.div>
-        </div>
-        <GoldDivider />
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="hero-subtitle text-sm text-white/60"
+        >
+          Software couture for leaders who refuse the ordinary. Every interaction, handcrafted.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+          className="hero-actions"
+        >
+          <a href="#pricing" className="btn-gold">Explore tiers</a>
+          <a href="#contact" className="btn-ghost">Request a blueprint</a>
+          <a href="#concierge" className="btn-ghost">Open concierge</a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="mt-6 flex justify-center"
+        >
+          <GoldDivider />
+        </motion.div>
+
+        <motion.ul
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.8 }}
+          className="hero-ticker"
+        >
+          {TICKER.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </motion.ul>
       </motion.div>
     </section>
   );
