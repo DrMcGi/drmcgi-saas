@@ -3,7 +3,7 @@
 import { ReactNode, useEffect } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 
-type WalkerType = "bot" | "scout" | "terminal";
+type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
 
 type WalkerConfig = {
   id: string;
@@ -20,7 +20,9 @@ type WalkerProps = Omit<WalkerConfig, "id">;
 const WALKERS: WalkerConfig[] = [
   { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 1 },
   { id: "scout", type: "scout", yRange: [12, 36], driftRange: [-5, 5], speedRange: [16, 22], pauseRange: [2400, 4600], scale: 0.78 },
-  { id: "terminal", type: "terminal", yRange: [58, 82], driftRange: [-4, 6], speedRange: [22, 32], pauseRange: [3400, 6200], scale: 1.08 }
+  { id: "terminal", type: "terminal", yRange: [58, 82], driftRange: [-4, 6], speedRange: [22, 32], pauseRange: [3400, 6200], scale: 1.08 },
+  { id: "cheese", type: "cheese", yRange: [18, 44], driftRange: [-6, 5], speedRange: [20, 28], pauseRange: [2800, 5200], scale: 0.92 },
+  { id: "pizza", type: "pizza", yRange: [44, 72], driftRange: [-7, 6], speedRange: [24, 34], pauseRange: [3200, 5800], scale: 1 }
 ];
 
 function randomBetween(min: number, max: number) {
@@ -102,6 +104,32 @@ function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: Wal
           <span />
           <span />
         </div>
+      </div>
+    );
+  } else if (type === "cheese") {
+    content = (
+      <div className="wallpaper-cheese">
+        <span className="cheese-label">Cheese by DrMcGi</span>
+        <span className="cheese-wedge">
+          <span className="cheese-edge" />
+          <span className="cheese-spot" />
+          <span className="cheese-spot spot-b" />
+          <span className="cheese-spot spot-c" />
+        </span>
+      </div>
+    );
+  } else if (type === "pizza") {
+    content = (
+      <div className="wallpaper-pizza">
+  <span className="pizza-label">{"Let's Keep Dairy"}</span>
+        <span className="pizza-slice">
+          <span className="pizza-crust" />
+          <span className="pizza-body" />
+          <span className="pizza-glisten" />
+          <span className="pizza-topping" />
+          <span className="pizza-topping topping-b" />
+          <span className="pizza-steam" />
+        </span>
       </div>
     );
   }
