@@ -1,0 +1,147 @@
+DRMCGI SAAS EXPERIENCE — IMPLEMENTATION NOTES (NOV 2025)
+======================================================
+
+STACK & INFRASTRUCTURE
+----------------------
+- Framework: Next.js 16 (App Router) with React 19 client components.
+- Styling: Tailwind-like utility tokens declared in src/app/globals.css; custom glassmorphism, gradients, and motion keyframes.
+- Animation: Framer Motion powers entrance sequences, floating layers, guidance bot choreography, and live wallpaper walkers.
+- State: Lightweight configurator/concierge state handled via Zustand store in src/lib/store.ts.
+- Email Delivery: Server route at src/app/api/contact/route.ts pipes concierge requests to Resend (HTML + plain text) with optional attachment support.
+- Messaging: WhatsApp flow centralized in src/lib/whatsapp.ts (message templating, label dictionaries, helper to build wa.me deep links).
+
+GLOBAL AESTHETICS
+-----------------
+- Color Tokens: Gold (#f7d87b / #fff2c9), teal-neon, deep ink (#020409), night gradient backgrounds.
+- Typography: Display stack (Clash Display / Playfair / Cormorant), body stack (Neue Haas Grotesk / Inter), monospace for technical accents.
+- Body Background: Layered radial gradients plus vertical night gradient (see globals.css body selector).
+- Hero Shell: Calmer gradient base with subtle blue accent; pointer-followed halo (soft radial) and reinstated gold constellation overlay (hero-caustics).
+- Glass Glow Shell: Reusable frosted surface with aurora conic sweep and border highlight.
+
+MOTION & BACKGROUND SYSTEMS
+---------------------------
+1. BackgroundManager.tsx
+   - Variant-driven stack of animated SVG/data-URI layers (hero, vision, atlas, packages, tiers, cases, configurator, contact, guarantee, concierge, nav, footer, marble, noise, aurora, ribbon, vein).
+   - Motion props respect prefers-reduced-motion by disabling transforms.
+
+2. MotionBackgrounds.tsx
+   - Adds softly pulsing neon orbs (top-left, bottom-right) in hero.
+
+3. LiveWallpaper.tsx
+   - Deterministic walker generator (hash-based) rendering five character types: bot, scout, terminal, cheese, pizza.
+   - Walker ranges cover altitude, drift, speed, and pause durations; degrade gracefully when animation reduced.
+   - Additional atlas orb, rings, grid, and constellation layers provide slow parallax.
+
+4. Hero Caustics Overlay
+   - CSS class .hero-caustics reintroduced to blend radial gold wash with /backgrounds/hero-constellation.svg (dashed arcs, dotted gold filigree).
+
+HERO EXPERIENCE
+----------------
+- Structured in Hero.tsx with staged Framer Motion transitions (kicker, headline, subtitle, CTA cluster, divider, ticker).
+- Pointer-reactive halo managed via CSS variables updated by mousemove listener on large viewports.
+- ShimmerText component delivers gold animated highlight on "Real business impact." (uses gradient background clip animation).
+- GoldDivider component references /backgrounds/gold-divider.svg for accent under CTAs.
+
+INTERACTIVE UTILITIES
+---------------------
+- BackToTop.tsx: Circular button with scroll progress ring, smooth scroll-to-top, respects reduced motion.
+- GoldDivider.tsx: Inline SVG accent reused in hero and other sections.
+- Nav.tsx & Footer.tsx: Fixed navigation with spotlight glow, CTA button, and footer gradient arcs.
+
+GUIDANCE & CONCIERGE
+--------------------
+1. GuidanceBot.tsx
+   - Appears between Experience Atlas and Contact when scrolling (entry/exit thresholds based on section offsets).
+   - Hover choreography: floating body, blinking eyes, antenna pulse, halo scale; WhatsApp CTA falls back to bare wa.me link when no context selected.
+   - Panel content: Configurator + Concierge guidance steps, Cheese by DrMcGi promo chip, CTA buttons (Open configurator / WhatsApp us).
+   - Auto-hides near contact section to avoid overlap (scroll thresholds computed on mount).
+
+2. Concierge.tsx
+   - Floating dock with toggle pill, Cal.com iframe, copy assistant (keyword-based canned responses), voice memo recorder (MediaRecorder API), and WhatsApp floating button seeded with current configuration.
+   - BackgroundManager variant "concierge" supplies orbital SVG highlight.
+
+CONFIGURATOR & PACKAGES
+-----------------------
+- Configurator.tsx: Feature toggle grid (website, SaaS, custom modules) with animated investment ledger.
+  * AnimatedAmount component springs total values; milestone thresholds trigger confetti via canvas-confetti.
+  * Progress bar + milestone labels (Foundation → Legacy) based on selection count.
+  * Breakdown drawer lists selected modules with per-item pricing.
+- Packages/Tiers components (packages, tiers, case studies) reuse BackgroundManager variants for patterned backgrounds.
+- ExperienceAtlas.tsx: Five-phase journey cards with motion reveal.
+
+CONTACT & OUTREACH
+------------------
+- Multi-step contact form (4 steps) with investment range slider, timeline radio buttons, optional attachment, narrative textbox.
+- Submission hits /api/contact/route.ts; success banner uses client name, resets form state.
+- WhatsApp shortcut builds link using createWhatsAppLink with current form payload + selected modules, tier, package.
+- Concierge WhatsApp button (floating) and hero/CTA WhatsApp links share same helper ensuring consistent context labels.
+
+MOBILE & ACCESSIBILITY NOTES
+-----------------------------
+- Guidance bot hidden under 960px via media queries in globals.css.
+- BackToTop pointer events disabled until visible to prevent focus traps.
+- prefers-reduced-motion respected across hero background, live wallpaper, guidance bot hover choreography, BackToTop transitions, and confetti triggers.
+- Forms use uppercase labels with adequate color contrast; focus styles enhanced via animated border/ring.
+
+ASSET CATALOG (public/backgrounds)
+----------------------------------
+- atlas-waves.svg — flowing lines for Experience Atlas section.
+- cases-lattice.svg — lattice grid for Case Studies.
+- concierge-orbital.svg — circular orbital halo for concierge dock.
+- contact-veil.svg — layered veils for contact glass shell.
+- corner-accent.svg — hero corner flourish (top-left gold accent).
+- footer-flare.svg — radiant flare for footer background.
+- gold-divider.svg — inline divider used beneath hero CTAs.
+- guarantee-particles.svg — particle field for guarantee section.
+- hero-bg.svg — base hero gradient + gold glow (unused directly once replaced by CSS gradients, but available).
+- hero-constellation.svg — dashed gold arcs + dotted filigree overlay reinstated via .hero-caustics.
+- marble.svg — used in configurator background.
+- nav-flare.svg — top navigation glow.
+- noise.svg — subtle grain overlay for noise variant.
+- packages-silk.svg — soft silk texture for packages grid.
+- tiers-strata.svg — layered strata lines for tiers section.
+- vision-lines.svg — guiding lines for Experience Atlas intro.
+
+WHATSAPP PREFILL RULES
+----------------------
+- createWhatsAppLink() composes wa.me URL with encoded message built by buildWhatsAppMessage().
+- Message fields: Origin, Name, Email, Project, Budget, Timeline, Modules (mapped via FEATURE_LABELS), Preferred tier, Package inspiration, freeform message, attachment note.
+- Guidance bot WhatsApp CTA uses bare wa.me link if no modules/tier/package context is selected to avoid empty metadata.
+
+EMAIL PIPELINE DETAILS
+----------------------
+- Requires RESEND_API_KEY, RESEND_FROM_EMAIL, RESEND_TO_EMAIL (or CONTACT_RECIPIENT) environment variables.
+- POST handler validates name/email/project/message, attaches optional file buffer, sends HTML table and plaintext fallback.
+- Error handling: 503 when env not set, 400 on missing fields, 500 on Resend failure.
+
+STATE & DEFAULTS
+----------------
+- Zustand store (useApp) initializes with modules {"mvp", "luxuryUI"} selected.
+- applyTier()/applyPackage() preselect modules by tier or package and clear conflicting selection when toggled off.
+- Selected modules reflected across Configurator, Concierge, Contact form, Guidance bot messaging, and WhatsApp links.
+
+UTILITY MODULES & COMPONENTS
+----------------------------
+- BackgroundManager variants include ribbon, aurora, noise, marble overlays for reusability in new sections.
+- Motion keyframes in globals.css support guidance bot hover, shimmer text, live wallpaper pieces.
+- BackToTop ring uses SVG stroke dash offset to display scroll progress.
+- Hero ticker replicates achievements list under CTAs.
+
+TEST & BUILD COMMANDS
+---------------------
+- pnpm lint -- --format=stylish : ESLint for the entire app.
+- pnpm dev : Next.js dev server (Turbopack) for local preview.
+
+QUICK FEATURE INDEX
+-------------------
+- Hero: Luxury copy, staged animations, gold shimmer headline, ticker, calming background with visible gold filigree.
+- Guidance Bot: Floating assistant with hover choreography, Cheese by DrMcGi promo, contextual WhatsApp CTA.
+- Live Wallpaper: Deterministic walkers (bot, scout, terminal, cheese wedge, pizza slice) drifting across background.
+- Configurator: Real-time pricing, milestone confetti, investment breakdown, progress meter.
+- Concierge Dock: Cal.com embed, AI copy hints, voice memo recording, WhatsApp concierge link.
+- Contact Blueprint: Multi-step form to Resend pipeline, WhatsApp shortcut, progress tracking, success/error banners.
+- Back To Top: Scroll progress indicator with halo button near guidance bot.
+- WhatsApp Helper: Consistent message templating shared by every CTA.
+- Background Stack: SVG assets and data-URI gradients orchestrated per section for signature visual atmosphere.
+
+Use this file as a client-facing or internal cheat sheet when quoting features, replicating components, or deciding which visual assets to reuse in future builds.

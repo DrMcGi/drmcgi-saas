@@ -283,7 +283,16 @@ h1, h2, h3, h4, h5 {
 }
 
 .hero-caustics {
-  display: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(247, 216, 123, 0.12), transparent 62%),
+    url("/backgrounds/hero-constellation.svg");
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: screen;
+  opacity: 0.32;
+  pointer-events: none;
 }
 
 .hero-content {
