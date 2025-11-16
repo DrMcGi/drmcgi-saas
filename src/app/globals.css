@@ -260,39 +260,30 @@ h1, h2, h3, h4, h5 {
   --pointer-x: 50%;
   --pointer-y: 38%;
   background:
-    radial-gradient(circle at 12% 12%, rgba(92, 164, 255, 0.12), transparent 60%),
-    radial-gradient(circle at 78% -18%, rgba(255, 177, 133, 0.1), transparent 62%);
+    linear-gradient(180deg, rgba(10, 14, 24, 0.9) 0%, rgba(4, 8, 16, 0.96) 52%, rgba(2, 4, 9, 1) 100%),
+    radial-gradient(circle at 82% 14%, rgba(114, 195, 255, 0.16), transparent 72%);
+  background-blend-mode: normal;
 }
 
 .hero-shell::after {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      circle at var(--pointer-x) var(--pointer-y),
-      rgba(118, 197, 255, 0.2) 0%,
-      rgba(247, 216, 123, 0.1) 36%,
-      transparent 70%
-    );
-  mix-blend-mode: screen;
-  opacity: 0.32;
-  filter: blur(72px);
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(114, 195, 255, 0.08) 0%,
+    rgba(247, 216, 123, 0.05) 28%,
+    transparent 48%
+  );
+  mix-blend-mode: normal;
+  opacity: 0.12;
+  filter: blur(48px);
   pointer-events: none;
   transition: opacity 0.6s ease;
 }
 
 .hero-caustics {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 22% 34%, rgba(118, 197, 255, 0.24), transparent 62%),
-    radial-gradient(circle at 74% 24%, rgba(184, 149, 255, 0.16), transparent 68%),
-    radial-gradient(circle at 52% 88%, rgba(255, 184, 133, 0.12), transparent 74%);
-  opacity: 0.48;
-  filter: blur(68px);
-  mix-blend-mode: screen;
-  pointer-events: none;
+  display: none;
 }
 
 .hero-content {
@@ -324,7 +315,7 @@ h1, h2, h3, h4, h5 {
   font-size: clamp(1.4rem, 3vw, 2rem);
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, rgba(184, 224, 255, 0.28), rgba(247, 216, 123, 0.6), rgba(171, 236, 255, 0.28));
+  background: linear-gradient(90deg, rgba(247, 216, 123, 0.55), rgba(247, 216, 123, 0.85));
   background-size: 240% auto;
   -webkit-background-clip: text;
   color: transparent;
