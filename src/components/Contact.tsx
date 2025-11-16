@@ -1,8 +1,10 @@
 "use client";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import BackgroundManager from "@/components/BackgroundManager";
 import ShimmerText from "@/components/ShimmerText";
+import { useApp } from "@/lib/store";
+import { createWhatsAppLink, formatBudget } from "@/lib/whatsapp";
 
 const fmt = new Intl.NumberFormat("en-US");
 
@@ -20,6 +22,8 @@ export default function Contact() {
     borderColor: "rgba(125, 249, 255, 0.4)",
     backgroundColor: "rgba(12, 18, 28, 0.85)"
   } as const;
+  const { selected, activeTier, activePackage } = useApp();
+  const selectedModules = useMemo(() => Array.from(selected).sort(), [selected]);
 
   return (
     <section id="contact" className="relative mx-auto max-w-6xl px-6 py-24">
@@ -221,16 +225,25 @@ export default function Contact() {
                   const form = document.getElementById("blueprintForm") as HTMLFormElement;
                   const formData = new FormData(form);
                   const payload = Object.fromEntries(formData.entries());
-                  const message = encodeURIComponent(
-`Blueprint via WhatsApp:
-Name: ${payload.name || ""}
-Email: ${payload.email || ""}
-Project: ${payload.project || ""}
-Budget: ${payload.budget ? fmt.format(parseInt(payload.budget as string, 10)) + " ZAR" : ""}
-Timeline: ${payload.timeline || ""}
-Message: ${payload.message || ""}`
-                  );
-                  window.open(`https://wa.me/27649211745?text=${message}`, "_blank");
+                  const attachmentEntry = formData.get("attachment");
+                  const attachmentName = attachmentEntry instanceof File && attachmentEntry.name ? attachmentEntry.name : undefined;
+                  const budgetValue = payload.budget ? parseInt(payload.budget as string, 10) : undefined;
+
+                  const link = createWhatsAppLink({
+                    origin: "Contact blueprint form",
+                    name: (payload.name as string) || null,
+                    email: (payload.email as string) || null,
+                    project: (payload.project as string) || null,
+                    budget: budgetValue ? formatBudget(budgetValue) : undefined,
+                    timeline: (payload.timeline as string) || null,
+                    message: (payload.message as string) || null,
+                    attachmentName,
+                    modules: selectedModules,
+                    tierId: activeTier,
+                    packageId: activePackage
+                  });
+
+                  window.open(link, "_blank", "noopener");
                 }}
               >
                 WhatsApp concierge

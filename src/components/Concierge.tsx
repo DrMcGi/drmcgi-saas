@@ -1,8 +1,10 @@
 // src/components/Concierge.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BackgroundManager from "@/components/BackgroundManager";
+import { useApp } from "@/lib/store";
+import { createWhatsAppLink } from "@/lib/whatsapp";
 
 const FALLBACK_ASSIST = [
   {
@@ -27,6 +29,17 @@ export default function Concierge() {
   const [memoUrl, setMemoUrl] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const { selected, activeTier, activePackage } = useApp();
+  const whatsappHref = useMemo(
+    () =>
+      createWhatsAppLink({
+        origin: "Concierge dock",
+        modules: Array.from(selected).sort(),
+        tierId: activeTier,
+        packageId: activePackage
+      }),
+    [selected, activeTier, activePackage]
+  );
 
   useEffect(() => () => {
     mediaRecorderRef.current?.stop();
@@ -95,7 +108,7 @@ export default function Concierge() {
             <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Calendar</h4>
             <iframe
               title="Concierge booking"
-              src="https://cal.com/drmcgi/30min?hideEventTypeDetails=1"
+              src="https://cal.com/drmcgi-apa8hg/"
               className="w-full h-48 rounded-2xl border border-white/10 bg-[rgba(6,9,15,0.8)]"
               loading="lazy"
             />
@@ -143,9 +156,9 @@ export default function Concierge() {
 
       <a
         id="waButton"
-        href="https://wa.me/27649211745?text=I%20would%20like%20to%20commission%20DrMcGi%27s%20SaaS%20Co.%20to%20craft%20a%20blueprint."
+        href={whatsappHref}
         target="_blank"
-  rel="noopener noreferrer"
+        rel="noopener noreferrer"
         className="whatsapp-float"
         title="Start a WhatsApp conversation with DrMcGi's SaaS Co."
       >

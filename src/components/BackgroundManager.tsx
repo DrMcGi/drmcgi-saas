@@ -1,7 +1,8 @@
 // src/components/BackgroundManager.tsx
 "use client";
-import React from "react";
-import { motion, type MotionProps } from "framer-motion";
+import { useMemo } from "react";
+import type { CSSProperties } from "react";
+import { motion, type MotionProps, useReducedMotion } from "framer-motion";
 
 type Variant =
   | "hero"
@@ -33,7 +34,7 @@ const DATA_URI_STARFIELD =
 
 type Layer = {
   className?: string;
-  style: React.CSSProperties;
+  style: CSSProperties;
   key?: string;
   initial?: MotionProps["initial"];
   animate?: MotionProps["animate"];
@@ -44,20 +45,20 @@ const FLOAT_TRANSITION: MotionProps["transition"] = {
   duration: 36,
   repeat: Infinity,
   repeatType: "mirror",
-  ease: "easeInOut"
+  ease: "easeInOut" as const
 };
 
 const ORBIT_TRANSITION: MotionProps["transition"] = {
   duration: 48,
   repeat: Infinity,
   repeatType: "mirror",
-  ease: "easeInOut"
+  ease: "easeInOut" as const
 };
 
 const LOOP_TRANSITION: MotionProps["transition"] = {
   duration: 52,
   repeat: Infinity,
-  ease: "linear"
+  ease: "linear" as const
 };
 
 const LAYERS: Record<Variant, Layer[]> = {
@@ -310,7 +311,7 @@ const LAYERS: Record<Variant, Layer[]> = {
         backgroundSize: "420px 420px"
       },
       animate: { opacity: [0.18, 0.32, 0.18] },
-      transition: { duration: 18, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }
+      transition: { duration: 18, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" as const }
     }
   ],
   aurora: [
@@ -349,13 +350,31 @@ const LAYERS: Record<Variant, Layer[]> = {
 };
 
 export default function BackgroundManager({ variant = "hero" }: { variant?: Variant }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  const layers = useMemo(() => {
+    const baseLayers = LAYERS[variant] ?? [];
+    if (!prefersReducedMotion) {
+      return baseLayers;
+    }
+
+    return baseLayers.map((layer) => ({
+      ...layer,
+      animate: undefined,
+      transition: undefined
+    }));
+  }, [variant, prefersReducedMotion]);
+
   return (
     <div className="absolute inset-0 -z-10 pointer-events-none">
-      {(LAYERS[variant] ?? []).map((layer, index) => (
+      {layers.map((layer, index) => (
         <motion.div
           key={layer.key ?? index}
           className={layer.className}
-          style={layer.style}
+          style={{
+            ...layer.style,
+            willChange: !prefersReducedMotion && layer.animate ? "transform, opacity" : undefined
+          }}
           initial={layer.initial}
           animate={layer.animate}
           transition={layer.transition}

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import BackgroundManager from "@/components/BackgroundManager";
 import MotionBackgrounds from "@/components/MotionBackgrounds";
 import ShimmerText from "@/components/ShimmerText";
@@ -13,18 +13,57 @@ const TICKER = [
 ];
 
 export default function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+
   useEffect(() => {
+    if (prefersReducedMotion) {
+      return;
+    }
+
     const shell = document.querySelector<HTMLElement>(".hero-shell");
+    if (!shell) return;
+
+    const mq = window.matchMedia("(min-width: 1024px)");
     const listener = (event: MouseEvent) => {
-      if (!shell) return;
       const x = (event.clientX / window.innerWidth) * 100;
       const y = (event.clientY / window.innerHeight) * 100;
       shell.style.setProperty("--pointer-x", `${x}%`);
       shell.style.setProperty("--pointer-y", `${y}%`);
     };
-    window.addEventListener("mousemove", listener);
-    return () => window.removeEventListener("mousemove", listener);
-  }, []);
+
+    const enable = () => window.addEventListener("mousemove", listener);
+    const disable = () => {
+      window.removeEventListener("mousemove", listener);
+      shell.style.removeProperty("--pointer-x");
+      shell.style.removeProperty("--pointer-y");
+    };
+
+    if (mq.matches) {
+      enable();
+    }
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        enable();
+      } else {
+        disable();
+      }
+    };
+
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", handleChange);
+      return () => {
+        mq.removeEventListener("change", handleChange);
+        disable();
+      };
+    }
+
+    mq.addListener(handleChange);
+    return () => {
+      mq.removeListener(handleChange);
+      disable();
+    };
+  }, [prefersReducedMotion]);
 
   return (
     <section id="home" className="hero-shell">

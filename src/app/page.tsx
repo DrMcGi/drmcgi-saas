@@ -13,6 +13,8 @@ import ExperienceAtlas from "@/components/ExperienceAtlas";
 import GuaranteeSuite from "@/components/GuaranteeSuite";
 import Preloader from "@/components/Preloader";
 import LiveWallpaper from "@/components/LiveWallpaper";
+import BackToTop from "@/components/BackToTop";
+import GuidanceBot from "@/components/GuidanceBot";
 
 export default function Page() {
   return (
@@ -20,6 +22,7 @@ export default function Page() {
       <Nav />
       <Preloader />
       <LiveWallpaper />
+      <GuidanceBot />
       <main id="home" className="pt-20">
         <Hero />
         <SignatureVision />
@@ -34,6 +37,7 @@ export default function Page() {
       <Footer />
       <Concierge />
       <StoryboardPortal />
+      <BackToTop />
     </>
   );
 }

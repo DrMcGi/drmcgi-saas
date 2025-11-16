@@ -82,8 +82,10 @@ export default function CaseStudies() {
                 alt={study.title}
                 width={1200}
                 height={800}
-                unoptimized
                 className="case-media"
+                priority={index === 0}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                quality={85}
               />
               <div className="case-overlay">
                 {study.stats.map((stat) => (

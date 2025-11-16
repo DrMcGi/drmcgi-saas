@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { motion, useAnimationControls } from "framer-motion";
+import { ReactNode, useMemo } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
 
@@ -15,7 +15,7 @@ type WalkerConfig = {
   scale: number;
 };
 
-type WalkerProps = Omit<WalkerConfig, "id">;
+type WalkerProps = WalkerConfig & { disableMotion: boolean };
 
 const WALKERS: WalkerConfig[] = [
   { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 1 },
@@ -25,46 +25,44 @@ const WALKERS: WalkerConfig[] = [
   { id: "pizza", type: "pizza", yRange: [44, 72], driftRange: [-7, 6], speedRange: [24, 34], pauseRange: [3200, 5800], scale: 1 }
 ];
 
-function randomBetween(min: number, max: number) {
-  return Math.random() * (max - min) + min;
+function hashToUnit(seed: string) {
+  let h1 = 0xdeadbeef ^ seed.length;
+  let h2 = 0x41c6ce57 ^ seed.length;
+
+  for (let i = 0; i < seed.length; i++) {
+    const ch = seed.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+  h2 = Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+
+  const combined = (h1 ^ h2) >>> 0;
+  return combined / 4294967296;
 }
 
-function sleep(duration: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, duration);
-  });
+function randomBetweenSeed(base: string, min: number, max: number) {
+  return hashToUnit(base) * (max - min) + min;
 }
 
-function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: WalkerProps) {
-  const controls = useAnimationControls();
+function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, disableMotion }: WalkerProps) {
   const [minY, maxY] = yRange;
   const [minDrift, maxDrift] = driftRange;
   const [minSpeed, maxSpeed] = speedRange;
   const [minPause, maxPause] = pauseRange;
 
-  useEffect(() => {
-    let active = true;
+  const motionConfig = useMemo(() => {
+    const baseKey = `${id}-${type}`;
+    const startY = randomBetweenSeed(`${baseKey}:start`, minY, maxY);
+    const drift = randomBetweenSeed(`${baseKey}:drift`, minDrift, maxDrift);
+    const endY = startY + drift;
+    const duration = randomBetweenSeed(`${baseKey}:speed`, minSpeed, maxSpeed);
+    const repeatDelay = randomBetweenSeed(`${baseKey}:pause`, minPause, maxPause) / 1000;
+    const delayOffset = randomBetweenSeed(`${baseKey}:offset`, 0, 1.5);
 
-    const loop = async () => {
-      while (active) {
-        const startY = randomBetween(minY, maxY);
-        const drift = randomBetween(minDrift, maxDrift);
-        const duration = randomBetween(minSpeed, maxSpeed);
-        const pause = randomBetween(minPause, maxPause);
-
-        controls.set({ x: "-22vw", y: `${startY}vh`, opacity: 0, rotate: 0, scale });
-        await controls.start({ opacity: 1, transition: { duration: 0.75, ease: "easeOut" } });
-        await controls.start({ x: "118vw", y: `${startY + drift}vh`, rotate: drift / 2, transition: { duration, ease: "linear" } });
-        await controls.start({ opacity: 0, transition: { duration: 0.6, ease: "easeIn" } });
-        await sleep(pause);
-      }
-    };
-
-    loop();
-    return () => {
-      active = false;
-    };
-  }, [controls, minY, maxY, minDrift, maxDrift, minSpeed, maxSpeed, minPause, maxPause, scale]);
+    return { startY, endY, drift, duration, repeatDelay, delayOffset };
+  }, [id, type, minDrift, maxDrift, minPause, maxPause, minSpeed, maxSpeed, minY, maxY]);
 
   let content: ReactNode = null;
 
@@ -121,7 +119,7 @@ function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: Wal
   } else if (type === "pizza") {
     content = (
       <div className="wallpaper-pizza">
-  <span className="pizza-label">{"Let's Keep Dairy"}</span>
+        <span className="pizza-label">{"Let's Keep Dairy"}</span>
         <span className="pizza-slice">
           <span className="pizza-crust" />
           <span className="pizza-body" />
@@ -134,38 +132,93 @@ function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: Wal
     );
   }
 
+  const motionProps = disableMotion
+    ? {
+        initial: { opacity: 0.4, x: `${(motionConfig.startY % 36) - 18}vw`, y: `${motionConfig.startY}vh`, scale },
+        animate: { opacity: 0.32, x: `${(motionConfig.startY % 36) - 12}vw`, y: `${motionConfig.startY}vh`, scale },
+        transition: { duration: 7, ease: "easeInOut" as const, repeat: Infinity, repeatType: "mirror" as const }
+      }
+    : {
+        initial: { opacity: 0, x: "-22vw", y: `${motionConfig.startY}vh`, scale },
+        animate: {
+          x: ["-22vw", "118vw"],
+          y: [`${motionConfig.startY}vh`, `${motionConfig.endY}vh`],
+          opacity: [0, 1, 1, 0],
+          rotate: [0, motionConfig.drift / 2, motionConfig.drift / 2, motionConfig.drift / 2],
+          scale
+        },
+        transition: {
+          duration: motionConfig.duration,
+          ease: "linear" as const,
+          repeat: Infinity,
+          repeatType: "loop" as const,
+          repeatDelay: motionConfig.repeatDelay,
+          times: [0, 0.08, 0.92, 1],
+          delay: motionConfig.delayOffset
+        }
+      };
+
   return (
-    <motion.div className={`wallpaper-walker ${type}`} animate={controls} initial={false}>
+    <motion.div
+      className={`wallpaper-walker ${type}`}
+      style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
+      {...motionProps}
+    >
       {content}
     </motion.div>
   );
 }
 
 export default function LiveWallpaper() {
+  const prefersReducedMotion = useReducedMotion();
+  const disableMotion = Boolean(prefersReducedMotion);
+
   return (
-    <div className="live-wallpaper" aria-hidden>
+    <div className="live-wallpaper" aria-hidden="true">
       <motion.div
         className="atlas-orb"
-        animate={{ x: ["-8%", "12%", "18%", "-4%"], y: ["-14%", "-4%", "-12%", "-14%"], rotate: [0, 8, -6, 0], opacity: [0.18, 0.32, 0.22, 0.18] }}
-        transition={{ duration: 48, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
+        initial={{ opacity: 0 }}
+        animate={
+          disableMotion
+            ? { opacity: 0.28, x: "-4%", y: "-12%", rotate: 0 }
+            : { opacity: [0.18, 0.32, 0.22, 0.18], x: ["-8%", "12%", "18%", "-4%"], y: ["-14%", "-4%", "-12%", "-14%"], rotate: [0, 8, -6, 0] }
+        }
+        transition={disableMotion ? { duration: 1 } : { duration: 48, repeat: Infinity, ease: "easeInOut" as const }}
       />
 
-      <motion.div className="atlas-rings" animate={{ rotate: 360 }} transition={{ duration: 68, repeat: Infinity, ease: "linear" }} />
+      <motion.div
+        className="atlas-rings"
+        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
+        initial={{ opacity: 0.4 }}
+        animate={disableMotion ? { opacity: 0.4, rotate: 0 } : { opacity: 1, rotate: 360 }}
+        transition={disableMotion ? { duration: 1 } : { duration: 68, repeat: Infinity, ease: "linear" as const }}
+      />
 
       <motion.div
         className="atlas-grid"
-        animate={{ backgroundPosition: ["0% 0%", "80% 80%", "0% 0%"], opacity: [0.16, 0.28, 0.16] }}
-        transition={{ duration: 54, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: disableMotion ? undefined : "background-position, opacity" }}
+        initial={{ opacity: 0.12 }}
+        animate={
+          disableMotion
+            ? { opacity: 0.18, backgroundPosition: "0% 0%" }
+            : { opacity: [0.16, 0.28, 0.16], backgroundPosition: ["0% 0%", "80% 80%", "0% 0%"] }
+        }
+        transition={disableMotion ? { duration: 1.2 } : { duration: 54, repeat: Infinity, ease: "easeInOut" as const }}
       />
 
       <motion.div
         className="atlas-constellation"
-        animate={{ x: ["-6%", "6%", "-6%"], y: ["-2%", "4%", "-2%"], opacity: [0.12, 0.3, 0.12] }}
-        transition={{ duration: 62, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
+        initial={{ opacity: 0.1 }}
+        animate={
+          disableMotion ? { opacity: 0.18, x: "-2%", y: "-1%" } : { opacity: [0.12, 0.3, 0.12], x: ["-6%", "6%", "-6%"], y: ["-2%", "4%", "-2%"] }
+        }
+        transition={disableMotion ? { duration: 1.2 } : { duration: 62, repeat: Infinity, ease: "easeInOut" as const }}
       />
 
-      {WALKERS.map(({ id, ...config }) => (
-        <Walker key={id} {...config} />
+      {WALKERS.map((walker) => (
+        <Walker key={walker.id} disableMotion={disableMotion} {...walker} />
       ))}
     </div>
   );

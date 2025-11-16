@@ -1,8 +1,8 @@
 // src/components/Configurator.tsx
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { motion, useSpring, AnimatePresence } from "framer-motion";
-import confetti from "canvas-confetti";
+import { motion, AnimatePresence, useReducedMotion, useSpring, useMotionValueEvent } from "framer-motion";
+import type { Options as ConfettiOptions } from "canvas-confetti";
 import { useApp } from "@/lib/store";
 import BackgroundManager from "@/components/BackgroundManager";
 
@@ -38,26 +38,43 @@ const FEATURES: Feature[] = [
 
 const fmt = new Intl.NumberFormat("en-US");
 
+type ConfettiFn = (options?: ConfettiOptions) => Promise<undefined> | null;
+
+let confettiInstance: ConfettiFn | null = null;
+
+async function fireConfetti(options: ConfettiOptions) {
+  if (!confettiInstance) {
+    const confettiModule = await import("canvas-confetti");
+    confettiInstance = confettiModule.default;
+  }
+
+  confettiInstance?.(options);
+}
+
 function AnimatedAmount({ value, suffix = " ZAR", className }: { value: number; suffix?: string; className?: string }) {
-  const spring = useSpring(value, { stiffness: 120, damping: 22, mass: 0.7 });
+  const reduceMotion = useReducedMotion();
   const [display, setDisplay] = useState(value);
+  const spring = useSpring(value, { stiffness: 190, damping: 26, mass: 0.6 });
 
   useEffect(() => {
+    if (reduceMotion) {
+      const frame = window.requestAnimationFrame(() => setDisplay(value));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
     spring.set(value);
-  }, [spring, value]);
+    return undefined;
+  }, [reduceMotion, spring, value]);
 
-  useEffect(() => {
-    const unsubscribe = spring.on("change", (latest) => {
-      setDisplay(Math.round(latest));
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [spring]);
+  useMotionValueEvent(spring, "change", (latest) => {
+    if (reduceMotion) return;
+    const nextValue = Math.round(latest);
+    setDisplay((prev) => (prev === nextValue ? prev : nextValue));
+  });
 
   return (
     <span className={className} aria-live="polite">
-      {fmt.format(display)}
+      {fmt.format(reduceMotion ? value : display)}
       {suffix ?? ""}
     </span>
   );
@@ -66,6 +83,7 @@ function AnimatedAmount({ value, suffix = " ZAR", className }: { value: number; 
 export default function Configurator() {
   const { selected, toggle } = useApp();
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const totals = useMemo(() => {
     const base = FEATURES.reduce((sum, f) => sum + (selected.has(f.id) ? f.price : 0), 0);
@@ -83,10 +101,11 @@ export default function Configurator() {
     selected.size >= 4 ? "Scale" : "Foundation";
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     if (milestone === "Luxury" || milestone === "Legacy") {
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      fireConfetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
     }
-  }, [milestone]);
+  }, [milestone, prefersReducedMotion]);
 
   return (
     <section id="configurator" className="relative mx-auto max-w-6xl px-6 py-24">
@@ -94,10 +113,10 @@ export default function Configurator() {
 
       <div className="grid gap-10 relative">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.9 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
+          whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={prefersReducedMotion ? undefined : { once: true, amount: 0.3 }}
+          transition={prefersReducedMotion ? undefined : { duration: 0.6 }}
           className="space-y-3"
         >
           <p className="overline">Configurable couture</p>
@@ -110,24 +129,21 @@ export default function Configurator() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, delay: 0.1 }}
+            initial={false}
             className="section-frame bg-transparent"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" id="moduleList">
-              {FEATURES.map((f, i) => {
+              {FEATURES.map((f) => {
                 const active = selected.has(f.id);
                 return (
                   <motion.button
                     key={f.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.3 }}
-                    transition={{ delay: i * 0.03 }}
+                    initial={false}
                     onClick={() => toggle(f.id)}
                     className={`text-left package-card ${active ? "is-active" : ""}`}
+                    whileHover={prefersReducedMotion ? undefined : { y: -6 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
                   >
                     <span className="package-badge">{f.category}</span>
                     <h4>{f.name}</h4>
@@ -140,10 +156,7 @@ export default function Configurator() {
           </motion.div>
 
           <motion.aside
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
+            initial={false}
             className="section-frame bg-transparent flex flex-col gap-6"
           >
             <div>
