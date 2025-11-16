@@ -25,7 +25,6 @@
 /* Base */
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-html { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -260,16 +259,25 @@ h1, h2, h3, h4, h5 {
   padding: 8rem 0 6rem;
   --pointer-x: 50%;
   --pointer-y: 38%;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(92, 164, 255, 0.12), transparent 60%),
+    radial-gradient(circle at 78% -18%, rgba(255, 177, 133, 0.1), transparent 62%);
 }
 
 .hero-shell::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(247, 216, 123, 0.22), transparent 60%);
+  background:
+    radial-gradient(
+      circle at var(--pointer-x) var(--pointer-y),
+      rgba(118, 197, 255, 0.2) 0%,
+      rgba(247, 216, 123, 0.1) 36%,
+      transparent 70%
+    );
   mix-blend-mode: screen;
-  opacity: 0.45;
-  filter: blur(60px);
+  opacity: 0.32;
+  filter: blur(72px);
   pointer-events: none;
   transition: opacity 0.6s ease;
 }
@@ -278,10 +286,12 @@ h1, h2, h3, h4, h5 {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 30%, rgba(255, 216, 133, 0.25), transparent 60%),
-    radial-gradient(circle at 80% 25%, rgba(112, 208, 255, 0.18), transparent 65%);
-  opacity: 0.6;
-  filter: blur(52px);
+    radial-gradient(circle at 22% 34%, rgba(118, 197, 255, 0.24), transparent 62%),
+    radial-gradient(circle at 74% 24%, rgba(184, 149, 255, 0.16), transparent 68%),
+    radial-gradient(circle at 52% 88%, rgba(255, 184, 133, 0.12), transparent 74%);
+  opacity: 0.48;
+  filter: blur(68px);
+  mix-blend-mode: screen;
   pointer-events: none;
 }
 
@@ -314,7 +324,7 @@ h1, h2, h3, h4, h5 {
   font-size: clamp(1.4rem, 3vw, 2rem);
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, rgba(255, 240, 207, 0.4), rgba(255, 221, 154, 0.9), rgba(255, 240, 207, 0.4));
+  background: linear-gradient(90deg, rgba(184, 224, 255, 0.28), rgba(247, 216, 123, 0.6), rgba(171, 236, 255, 0.28));
   background-size: 240% auto;
   -webkit-background-clip: text;
   color: transparent;
