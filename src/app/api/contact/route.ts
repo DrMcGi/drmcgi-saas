@@ -5,12 +5,44 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
 const RESEND_TO_EMAIL = process.env.RESEND_TO_EMAIL || process.env.CONTACT_RECIPIENT;
 
+const MAX_ATTACHMENT_BYTES = 6 * 1024 * 1024;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 6;
+
+function getClientIp(request: Request) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) return forwardedFor.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip") || "unknown";
+}
+
+function getRateStore() {
+  const key = "__drmcgiContactRateStore";
+  const g = globalThis as unknown as Record<string, unknown>;
+  if (!g[key]) g[key] = new Map<string, { count: number; resetAt: number }>();
+  return g[key] as Map<string, { count: number; resetAt: number }>;
+}
+
+function isValidEmail(value: string) {
+  if (!value) return false;
+  if (value.length > 254) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function formatHtml(payload: Record<string, string>) {
   const rows = Object.entries(payload)
     .filter(([, value]) => value)
     .map(([label, value]) => {
       const title = label.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
-      return `<tr><td style="padding:8px 0;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:0.2em;">${title}</td><td style="padding:8px 0 8px 20px;color:#e2e8f0;font-size:15px;">${value}</td></tr>`;
+      return `<tr><td style="padding:8px 0;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:0.2em;">${escapeHtml(title)}</td><td style="padding:8px 0 8px 20px;color:#e2e8f0;font-size:15px;">${escapeHtml(value)}</td></tr>`;
     })
     .join("");
 
@@ -27,7 +59,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Email delivery is not configured." }, { status: 503 });
   }
 
+  const ip = getClientIp(request);
+  const now = Date.now();
+  const rateStore = getRateStore();
+  const entry = rateStore.get(ip);
+  if (!entry || entry.resetAt <= now) {
+    rateStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+  } else {
+    entry.count += 1;
+    if (entry.count > RATE_LIMIT_MAX) {
+      return NextResponse.json({ error: "Too many requests. Please wait a moment and try again." }, { status: 429 });
+    }
+  }
+
   const formData = await request.formData();
+
+  const honeypot = (formData.get("company") as string | null)?.trim() || "";
+  if (honeypot) {
+    return NextResponse.json({ ok: true });
+  }
 
   const name = (formData.get("name") as string | null)?.trim() || "";
   const email = (formData.get("email") as string | null)?.trim() || "";
@@ -39,6 +89,10 @@ export async function POST(request: Request) {
 
   if (!name || !email || !project || !message) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+  }
+
+  if (!isValidEmail(email)) {
+    return NextResponse.json({ error: "Please provide a valid email address." }, { status: 400 });
   }
 
   const payload = {
@@ -56,6 +110,9 @@ export async function POST(request: Request) {
     const attachments = [] as { filename: string; content: Buffer }[];
 
     if (attachment instanceof File && attachment.size > 0) {
+      if (attachment.size > MAX_ATTACHMENT_BYTES) {
+        return NextResponse.json({ error: "Attachment is too large." }, { status: 413 });
+      }
       const buffer = Buffer.from(await attachment.arrayBuffer());
       attachments.push({ filename: attachment.name, content: buffer });
     }
@@ -63,7 +120,7 @@ export async function POST(request: Request) {
     await resend.emails.send({
       from: RESEND_FROM_EMAIL,
       to: RESEND_TO_EMAIL.split(",").map((entry) => entry.trim()).filter(Boolean),
-  replyTo: email,
+      replyTo: email,
       subject: `Blueprint Request — ${project || "New"}`,
       html: formatHtml(payload),
       text: Object.entries(payload)

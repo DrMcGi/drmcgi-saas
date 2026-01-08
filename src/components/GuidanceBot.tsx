@@ -18,6 +18,7 @@ export default function GuidanceBot() {
   const [entryThreshold, setEntryThreshold] = useState<number | null>(null);
   const [exitThreshold, setExitThreshold] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [hovering, setHovering] = useState(false);
   const { selected, activeTier, activePackage } = useApp();
 
@@ -54,7 +55,8 @@ export default function GuidanceBot() {
       const y = window.scrollY;
       const hasPassedEntry = y >= entryThreshold - 40;
       const hasPassedExit = exitThreshold !== null && y >= exitThreshold;
-      setVisible(hasPassedEntry && !hasPassedExit);
+      const nextVisible = hasPassedEntry && !hasPassedExit;
+      setVisible((current) => (current === nextVisible ? current : nextVisible));
     };
 
     handleScroll();
@@ -75,6 +77,23 @@ export default function GuidanceBot() {
     });
   }, [modulesList, activeTier, activePackage]);
 
+  if (!visible) {
+    return null;
+  }
+
+  if (dismissed) {
+    return (
+      <button
+        type="button"
+        className="guidance-bot-pill"
+        onClick={() => setDismissed(false)}
+        aria-label="Open guidance bot"
+      >
+        Open guidance bot
+      </button>
+    );
+  }
+
   return (
     <motion.aside
       className={`guidance-bot ${visible ? "is-visible" : ""} ${hovering ? "is-hovering" : ""}`}
@@ -86,6 +105,19 @@ export default function GuidanceBot() {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
+      <div className="guidance-bot-top">
+        <span className="guidance-bot-label">Guidance bot</span>
+        <button
+          type="button"
+          className="guidance-bot-close"
+          onClick={() => setDismissed(true)}
+          aria-label="Close guidance bot"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="guidance-bot-grid">
       <motion.div
         className="guidance-bot-avatar"
         animate={prefersReducedMotion ? undefined : "idle"}
@@ -167,6 +199,7 @@ export default function GuidanceBot() {
             WhatsApp us
           </a>
         </div>
+      </div>
       </div>
     </motion.aside>
   );

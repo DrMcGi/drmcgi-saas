@@ -88,6 +88,13 @@ export default function Contact() {
             }
           }}
         >
+          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", top: "auto", width: 1, height: 1, overflow: "hidden" }}>
+            <label>
+              Company
+              <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+
           {step === 1 && (
             <div className="space-y-3">
               <label className="text-sm uppercase tracking-[0.35em] text-white/60">Name</label>

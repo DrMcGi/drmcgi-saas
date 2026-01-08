@@ -1,7 +1,21 @@
 "use client";
 
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+
+function isLowPowerDevice() {
+  if (typeof window === "undefined") return false;
+  const nav = navigator as Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean };
+  };
+
+  const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : undefined;
+  const mem = typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined;
+  const saveData = Boolean(nav.connection?.saveData);
+
+  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4);
+}
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
 
@@ -171,7 +185,30 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
 
 export default function LiveWallpaper() {
   const prefersReducedMotion = useReducedMotion();
-  const disableMotion = Boolean(prefersReducedMotion);
+  const [lowPower, setLowPower] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      setLowPower(isLowPowerDevice());
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  const disableMotion = Boolean(prefersReducedMotion) || lowPower;
+
+  const activeWalkers = useMemo(() => {
+    if (!lowPower) return WALKERS;
+
+    const keep = new Set(["bot", "cheese", "pizza"]);
+    const kept = WALKERS.filter((walker) => keep.has(walker.id));
+    return kept.length ? kept : WALKERS.slice(0, 3);
+  }, [lowPower]);
 
   return (
     <div className="live-wallpaper" aria-hidden="true">
@@ -217,7 +254,7 @@ export default function LiveWallpaper() {
         transition={disableMotion ? { duration: 1.2 } : { duration: 62, repeat: Infinity, ease: "easeInOut" as const }}
       />
 
-      {WALKERS.map((walker) => (
+      {activeWalkers.map((walker) => (
         <Walker key={walker.id} disableMotion={disableMotion} {...walker} />
       ))}
     </div>

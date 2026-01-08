@@ -106,19 +106,14 @@ export default function CaseStudies() {
                 <button
                   className="btn-ghost text-xs"
                   onClick={() => {
-                    const portal = document.getElementById("storyModal");
-                    const body = document.getElementById("storyBody");
-                    const header = document.querySelector("#storyHeader .text-lg");
-                    if (portal && body && header) {
-                      header.textContent = `${study.title} — walkthrough`;
-                      body.innerHTML = study.steps
-                        .map(
-                          (step) =>
-                            `<div class="flex items-start gap-3 mb-2"><div class="w-2 h-2 rounded-full bg-yellow-300 mt-2"></div><div class="text-sm text-white/80">${step}</div></div>`
-                        )
-                        .join("");
-                      portal.setAttribute("style", "display:block");
-                    }
+                    window.dispatchEvent(
+                      new CustomEvent("open-storyboard", {
+                        detail: {
+                          title: `${study.title} — walkthrough`,
+                          steps: study.steps
+                        }
+                      })
+                    );
                   }}
                 >
                   Storyboard ▶

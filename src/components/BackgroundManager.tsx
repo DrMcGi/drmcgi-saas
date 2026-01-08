@@ -1,8 +1,22 @@
 // src/components/BackgroundManager.tsx
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { motion, type MotionProps, useReducedMotion } from "framer-motion";
+
+function isLowPowerDevice() {
+  if (typeof window === "undefined") return false;
+  const nav = navigator as Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean };
+  };
+
+  const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : undefined;
+  const mem = typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined;
+  const saveData = Boolean(nav.connection?.saveData);
+
+  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4);
+}
 
 type Variant =
   | "hero"
@@ -351,10 +365,26 @@ const LAYERS: Record<Variant, Layer[]> = {
 
 export default function BackgroundManager({ variant = "hero" }: { variant?: Variant }) {
   const prefersReducedMotion = useReducedMotion();
+  const [lowPower, setLowPower] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      if (cancelled) return;
+      setLowPower(isLowPowerDevice());
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  const disableMotion = prefersReducedMotion || lowPower;
 
   const layers = useMemo(() => {
     const baseLayers = LAYERS[variant] ?? [];
-    if (!prefersReducedMotion) {
+    if (!disableMotion) {
       return baseLayers;
     }
 
@@ -363,7 +393,7 @@ export default function BackgroundManager({ variant = "hero" }: { variant?: Vari
       animate: undefined,
       transition: undefined
     }));
-  }, [variant, prefersReducedMotion]);
+  }, [variant, disableMotion]);
 
   return (
     <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -373,7 +403,7 @@ export default function BackgroundManager({ variant = "hero" }: { variant?: Vari
           className={layer.className}
           style={{
             ...layer.style,
-            willChange: !prefersReducedMotion && layer.animate ? "transform, opacity" : undefined
+            willChange: !disableMotion && layer.animate ? "transform, opacity" : undefined
           }}
           initial={layer.initial}
           animate={layer.animate}

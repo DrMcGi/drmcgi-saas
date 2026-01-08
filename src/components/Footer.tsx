@@ -37,8 +37,8 @@ const LinkedinIcon = (props: IconProps) => (
 const CONTACTS = [
   {
     label: "Email",
-    display: "Giftk.rantho@gmail",
-    href: "mailto:Giftk.rantho@gmail",
+    display: "Giftk.rantho@gmail.com",
+    href: "mailto:Giftk.rantho@gmail.com",
     icon: MailIcon,
     external: false
   },

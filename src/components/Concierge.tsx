@@ -6,6 +6,27 @@ import BackgroundManager from "@/components/BackgroundManager";
 import { useApp } from "@/lib/store";
 import { createWhatsAppLink } from "@/lib/whatsapp";
 
+const WhatsAppMark = () => (
+  <svg
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      d="M20.6 11.8c0 4.8-3.9 8.8-8.8 8.8a8.7 8.7 0 0 1-4.3-1.1L4 20l1.1-3.5a8.7 8.7 0 0 1-1.3-4.6c0-4.8 3.9-8.8 8.8-8.8s8.8 3.9 8.8 8.7Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      fill="currentColor"
+      d="M9.8 9c-.2-.4-.4-.4-.6-.4H8.8c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1 0 1.2.8 2.3.9 2.4.1.2 1.6 2.5 3.9 3.4.5.2.9.3 1.3.4.6.1 1.1.1 1.5 0 .5-.1 1.5-.6 1.6-1.2.1-.6.1-1 .1-1.1 0-.1-.1-.3-.3-.3h-.7c-.2 0-.4.1-.5.2-.2.2-.6.6-.7.6-.1.1-.3.1-.4 0-.2-.1-.9-.3-1.7-1-.6-.5-1.1-1.2-1.2-1.3-.1-.1 0-.3.1-.4.2-.2.3-.4.4-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3a3 3 0 0 0 .2-.5c0-.1 0-.2-.1-.3 0-.1-.3-.8-.7-1.6Z"
+    />
+  </svg>
+);
+
 const FALLBACK_ASSIST = [
   {
     test: /package|suite|option/i,
@@ -89,19 +110,40 @@ export default function Concierge() {
     setAssistantInput(assistantInput.trim());
   };
 
+  const PANEL_ID = "concierge-dock-panel";
+
   return (
     <div id="concierge" className="concierge-dock">
-      <button className="dock-pill" onClick={() => setOpen((value) => !value)}>
+      <button
+        className="dock-pill"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-controls={PANEL_ID}
+      >
         <span className="pulse-dot" aria-hidden />
         Executive concierge available
       </button>
 
-      <div className={`dock-panel ${open ? "open" : ""} relative overflow-hidden`}>
+      <div
+        id={PANEL_ID}
+        className={`dock-panel ${open ? "open" : ""} relative overflow-hidden`}
+        style={{ maxHeight: "min(82vh, 640px)", width: "min(92vw, 340px)" }}
+      >
         <BackgroundManager variant="concierge" />
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-sm uppercase tracking-[0.35em] text-white/70">DrMcGi Concierge Desk</h3>
-            <p className="text-xs text-white/60">Reserve time, capture a memo, or ask for instant guidance.</p>
+        <div className="dock-panel-scroll">
+          <div className="dock-panel-header">
+            <div className="space-y-1">
+              <h3 className="text-sm uppercase tracking-[0.35em] text-white/70">DrMcGi Concierge Desk</h3>
+              <p className="text-xs text-white/60">Reserve time, capture a memo, or ask for instant guidance.</p>
+            </div>
+            <button
+              type="button"
+              className="dock-panel-close"
+              onClick={() => setOpen(false)}
+              aria-label="Close concierge"
+            >
+              ✕
+            </button>
           </div>
 
           <section className="space-y-2">
@@ -162,7 +204,9 @@ export default function Concierge() {
         className="whatsapp-float"
         title="Start a WhatsApp conversation with DrMcGi's SaaS Co."
       >
-        <span aria-hidden>💬</span>
+        <span className="whatsapp-float-icon" aria-hidden>
+          <WhatsAppMark />
+        </span>
         <span>WhatsApp concierge</span>
       </a>
     </div>
