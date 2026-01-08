@@ -993,15 +993,15 @@ h1, h2, h3, h4, h5 {
 
 .backtotop-shell {
   position: fixed;
-  bottom: 3rem;
+  bottom: 1.5rem;
   left: 3rem;
   z-index: 70;
   pointer-events: none;
 }
 
 .backtotop-button {
-  width: 68px;
-  height: 68px;
+  width: 60px;
+  height: 60px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: radial-gradient(circle at 50% 45%, rgba(10, 16, 26, 0.88), rgba(10, 16, 26, 0.62));
@@ -1030,16 +1030,16 @@ h1, h2, h3, h4, h5 {
 
 .backtotop-indicator {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
 }
 
 .backtotop-ring {
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   transform: rotate(-90deg);
 }
 
@@ -1059,9 +1059,9 @@ h1, h2, h3, h4, h5 {
 
 .backtotop-arrow {
   position: absolute;
-  top: 14px;
-  width: 14px;
-  height: 14px;
+  top: 13px;
+  width: 12px;
+  height: 12px;
   border-left: 2px solid rgba(247, 216, 123, 0.92);
   border-bottom: 2px solid rgba(247, 216, 123, 0.92);
   transform: rotate(135deg);
@@ -1971,7 +1971,7 @@ h1, h2, h3, h4, h5 {
   .dock-pill { padding: 0.72rem 1.1rem; font-size: 0.7rem; letter-spacing: 0.2em; }
   .whatsapp-float { padding: 0.72rem 1.1rem; font-size: 0.7rem; letter-spacing: 0.2em; }
   .backtotop-shell { left: 1.5rem; bottom: 1.5rem; }
-  .backtotop-button { width: 64px; height: 64px; }
+  .backtotop-button { width: 56px; height: 56px; }
 }
 
 @media (max-height: 820px) {
