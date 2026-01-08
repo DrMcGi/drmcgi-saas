@@ -1,8 +1,16 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 import type { ReactNode } from "react";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const businessPhoneE164 = "+27649211745";
+const businessName = "DrMcGi";
+const socialProfiles = [
+  "https://www.instagram.com/drmcgisaasco/",
+  "https://github.com/DrMcGi",
+  "https://www.linkedin.com/in/gift-rantho"
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -41,8 +49,59 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: businessName,
+      url: siteUrl,
+      telephone: businessPhoneE164,
+      sameAs: socialProfiles,
+      areaServed: [
+        { "@type": "Country", name: "South Africa" },
+        "Worldwide"
+      ],
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone: businessPhoneE164,
+          contactType: "sales",
+          availableLanguage: ["en"],
+          areaServed: ["ZA", "Worldwide"]
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: businessName,
+      url: siteUrl
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Web & SaaS Development",
+      provider: { "@type": "Organization", name: businessName, url: siteUrl },
+      areaServed: [
+        { "@type": "City", name: "Pretoria" },
+        { "@type": "City", name: "Johannesburg" },
+        { "@type": "City", name: "Cape Town" },
+        { "@type": "Country", name: "South Africa" },
+        "Worldwide"
+      ]
+    }
+  ];
+
   return (
     <html lang="en">
+      <head>
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

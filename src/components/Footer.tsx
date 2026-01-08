@@ -34,6 +34,14 @@ const LinkedinIcon = (props: IconProps) => (
   </svg>
 );
 
+const InstagramIcon = (props: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+    <path d="M8.7 12a3.3 3.3 0 1 0 6.6 0 3.3 3.3 0 0 0-6.6 0Z" />
+    <path d="M17.3 6.9h.01" />
+  </svg>
+);
+
 const CONTACTS = [
   {
     label: "Email",
@@ -47,6 +55,13 @@ const CONTACTS = [
     display: "+27 64 921 1745",
     href: "https://wa.me/27649211745",
     icon: WhatsAppIcon,
+    external: true
+  },
+  {
+    label: "Instagram",
+    display: "@drmcgisaasco",
+    href: "https://www.instagram.com/drmcgisaasco/",
+    icon: InstagramIcon,
     external: true
   },
   {
