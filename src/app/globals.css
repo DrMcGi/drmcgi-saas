@@ -660,7 +660,7 @@ h1, h2, h3, h4, h5 {
     0 32px 60px rgba(4, 12, 22, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(22px);
-  z-index: 60;
+  z-index: 90;
   opacity: 0;
   pointer-events: none;
 }
@@ -688,6 +688,12 @@ h1, h2, h3, h4, h5 {
   font-size: 0.8rem;
   line-height: 1;
   cursor: pointer;
+  min-width: 36px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .guidance-bot-close:hover {
@@ -1778,6 +1784,7 @@ h1, h2, h3, h4, h5 {
   height: 120px;
   background: radial-gradient(circle at center, rgba(247, 216, 123, 0.22), transparent 70%);
   filter: blur(40px);
+  pointer-events: none;
 }
 
 .footer-inner {
@@ -1952,7 +1959,21 @@ h1, h2, h3, h4, h5 {
 
 /* Responsive tweaks */
 @media (max-width: 960px) {
-  .nav-links { display: none; }
+  .nav-inner { flex-wrap: wrap; }
+  .nav-links {
+    display: flex;
+    width: 100%;
+    order: 3;
+    justify-content: flex-start;
+    gap: 0.65rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 0.2rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav-links::-webkit-scrollbar { width: 0; height: 0; }
+  .nav-link { white-space: nowrap; font-size: 0.68rem; letter-spacing: 0.22em; padding: 0.38rem 0.5rem; }
+  .nav-cta { padding: 0.65rem 1.2rem; font-size: 0.68rem; letter-spacing: 0.28em; }
   .hero-shell { padding-top: 7rem; }
   .hero-ticker { flex-direction: column; align-items: flex-start; padding: 1.2rem; }
   .hero-ticker li { padding-left: 1rem; }
