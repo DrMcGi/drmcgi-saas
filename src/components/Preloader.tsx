@@ -32,8 +32,8 @@ export default function Preloader() {
         <motion.div
           className="preloader-shell"
           initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          animate={{ opacity: 1, pointerEvents: "auto" }}
+          exit={{ opacity: 0, pointerEvents: "none" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <motion.div
