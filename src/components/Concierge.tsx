@@ -124,77 +124,77 @@ export default function Concierge() {
         Executive concierge available
       </button>
 
-      <div
-        id={PANEL_ID}
-        className={`dock-panel ${open ? "open" : ""} relative overflow-hidden`}
-        style={{ maxHeight: "min(82vh, 640px)", width: "min(92vw, 340px)" }}
-      >
-        <BackgroundManager variant="concierge" />
-        <div className="dock-panel-scroll">
-          <div className="dock-panel-header">
-            <div className="space-y-1">
-              <h3 className="text-sm uppercase tracking-[0.35em] text-white/70">DrMcGi Concierge Desk</h3>
-              <p className="text-xs text-white/60">Reserve time, capture a memo, or ask for instant guidance.</p>
-            </div>
-            <button
-              type="button"
-              className="dock-panel-close"
-              onClick={() => setOpen(false)}
-              aria-label="Close concierge"
-            >
-              ✕
-            </button>
-          </div>
-
-          <section className="space-y-2">
-            <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Calendar</h4>
-            <iframe
-              title="Concierge booking"
-              src="https://cal.com/drmcgi-apa8hg/"
-              className="w-full h-48 rounded-2xl border border-white/10 bg-[rgba(6,9,15,0.8)]"
-              loading="lazy"
-            />
-          </section>
-
-          <section className="space-y-3">
-            <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Copy assistant</h4>
-            <textarea
-              className="w-full rounded-2xl border border-white/10 bg-[rgba(6,9,15,0.7)] px-4 py-3 text-xs text-white/80 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-              rows={3}
-              value={assistantInput}
-              onChange={(event) => setAssistantInput(event.target.value)}
-              placeholder="Describe the experience you are chasing."
-            />
-            <button type="button" className="btn-ghost text-xs" onClick={handleAssistant}>
-              Draft response
-            </button>
-            {assistantResponse && (
-              <p className="text-xs text-white/70 leading-relaxed">{assistantResponse}</p>
-            )}
-          </section>
-
-          <section className="space-y-3">
-            <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Voice memo</h4>
-            <div className="flex gap-3">
+      {open && (
+        <div
+          id={PANEL_ID}
+          className="dock-panel open relative overflow-hidden"
+          style={{ maxHeight: "min(82vh, 640px)", width: "min(92vw, 340px)" }}
+        >
+          <BackgroundManager variant="concierge" />
+          <div className="dock-panel-scroll">
+            <div className="dock-panel-header">
+              <div className="space-y-1">
+                <h3 className="text-sm uppercase tracking-[0.35em] text-white/70">DrMcGi Concierge Desk</h3>
+                <p className="text-xs text-white/60">Reserve time, capture a memo, or ask for instant guidance.</p>
+              </div>
               <button
                 type="button"
-                className="btn-gold text-xs"
-                onClick={recording ? stopRecording : startRecording}
+                className="dock-panel-close"
+                onClick={() => setOpen(false)}
+                aria-label="Close concierge"
               >
-                {recording ? "Stop capture" : "Start capture"}
+                ✕
               </button>
-              {memoUrl && (
-                <a href={memoUrl} download="drmcgi-brief.webm" className="btn-ghost text-xs">
-                  Download memo
-                </a>
-              )}
             </div>
-            <p className="text-[10px] uppercase tracking-[0.35em] text-white/50">
-              We transcribe memos privately and respond with action steps.
-            </p>
-          </section>
+
+            <section className="space-y-2">
+              <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Calendar</h4>
+              <iframe
+                title="Concierge booking"
+                src="https://cal.com/drmcgi-apa8hg/"
+                className="w-full h-48 rounded-2xl border border-white/10 bg-[rgba(6,9,15,0.8)]"
+                loading="lazy"
+              />
+            </section>
+
+            <section className="space-y-3">
+              <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Copy assistant</h4>
+              <textarea
+                className="w-full rounded-2xl border border-white/10 bg-[rgba(6,9,15,0.7)] px-4 py-3 text-xs text-white/80 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                rows={3}
+                value={assistantInput}
+                onChange={(event) => setAssistantInput(event.target.value)}
+                placeholder="Describe the experience you are chasing."
+              />
+              <button type="button" className="btn-ghost text-xs" onClick={handleAssistant}>
+                Draft response
+              </button>
+              {assistantResponse && <p className="text-xs text-white/70 leading-relaxed">{assistantResponse}</p>}
+            </section>
+
+            <section className="space-y-3">
+              <h4 className="text-xs uppercase tracking-[0.32em] text-white/60">Voice memo</h4>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  className="btn-gold text-xs"
+                  onClick={recording ? stopRecording : startRecording}
+                >
+                  {recording ? "Stop capture" : "Start capture"}
+                </button>
+                {memoUrl && (
+                  <a href={memoUrl} download="drmcgi-brief.webm" className="btn-ghost text-xs">
+                    Download memo
+                  </a>
+                )}
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.35em] text-white/50">
+                We transcribe memos privately and respond with action steps.
+              </p>
+            </section>
+          </div>
         </div>
-      </div>
+      )}
 
       <a
         id="waButton"

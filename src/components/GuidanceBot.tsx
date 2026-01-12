@@ -15,6 +15,7 @@ const GLOW_TRANSITION = { duration: 3.6, repeat: Infinity, repeatType: "mirror" 
 
 export default function GuidanceBot() {
   const prefersReducedMotion = useReducedMotion();
+  const [hideOnMobilePortrait, setHideOnMobilePortrait] = useState(false);
   const [entryThreshold, setEntryThreshold] = useState<number | null>(null);
   const [exitThreshold, setExitThreshold] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
@@ -23,6 +24,24 @@ export default function GuidanceBot() {
   const { selected, activeTier, activePackage } = useApp();
 
   const modulesList = useMemo(() => Array.from(selected).sort(), [selected]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const query = "(pointer: coarse) and (max-width: 960px) and (orientation: portrait)";
+    const media = window.matchMedia(query);
+
+    const sync = () => setHideOnMobilePortrait(media.matches);
+    sync();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", sync);
+      return () => media.removeEventListener("change", sync);
+    }
+
+    media.addListener(sync);
+    return () => media.removeListener(sync);
+  }, []);
 
   useEffect(() => {
     const atlas = document.getElementById("atlas");
@@ -78,6 +97,10 @@ export default function GuidanceBot() {
   }, [modulesList, activeTier, activePackage]);
 
   if (!visible) {
+    return null;
+  }
+
+  if (hideOnMobilePortrait) {
     return null;
   }
 
