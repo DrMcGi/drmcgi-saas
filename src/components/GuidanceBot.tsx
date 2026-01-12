@@ -15,7 +15,7 @@ const GLOW_TRANSITION = { duration: 3.6, repeat: Infinity, repeatType: "mirror" 
 
 export default function GuidanceBot() {
   const prefersReducedMotion = useReducedMotion();
-  const [hideOnMobilePortrait, setHideOnMobilePortrait] = useState(false);
+  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
   const [entryThreshold, setEntryThreshold] = useState<number | null>(null);
   const [exitThreshold, setExitThreshold] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
@@ -31,7 +31,7 @@ export default function GuidanceBot() {
     const query = "(pointer: coarse) and (max-width: 960px) and (orientation: portrait)";
     const media = window.matchMedia(query);
 
-    const sync = () => setHideOnMobilePortrait(media.matches);
+    const sync = () => setIsMobilePortrait(media.matches);
     sync();
 
     if (typeof media.addEventListener === "function") {
@@ -100,10 +100,6 @@ export default function GuidanceBot() {
     return null;
   }
 
-  if (hideOnMobilePortrait) {
-    return null;
-  }
-
   if (dismissed) {
     return (
       <button
@@ -121,7 +117,15 @@ export default function GuidanceBot() {
     <motion.aside
       className={`guidance-bot ${visible ? "is-visible" : ""} ${hovering ? "is-hovering" : ""}`}
       initial={false}
-      animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+      animate={
+        visible
+          ? isMobilePortrait
+            ? { opacity: 1 }
+            : { opacity: 1, x: 0 }
+          : isMobilePortrait
+            ? { opacity: 0 }
+            : { opacity: 0, x: -40 }
+      }
       transition={{ duration: 0.45, ease: "easeOut" }}
       role="complementary"
       aria-label="Build concierge guidance"

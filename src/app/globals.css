@@ -2028,8 +2028,17 @@ main {
 }
 
 @media (pointer: coarse) and (max-width: 960px) and (orientation: portrait) {
-  .guidance-bot,
-  .guidance-bot-pill {
-    display: none !important;
+  .guidance-bot {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    z-index: 200;
+    isolation: isolate;
+  }
+
+  .guidance-bot-grid {
+    overflow: visible;
+    max-height: none;
   }
 }
