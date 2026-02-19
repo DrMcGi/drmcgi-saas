@@ -1,36 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="2048" height="2048" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <!-- dark base -->
-    <linearGradient id="gBase" x1="0" x2="1">
-      <stop offset="0" stop-color="#070707"/>
-      <stop offset="1" stop-color="#0f0f0f"/>
-    </linearGradient>
-
-    <!-- gold tint for veins -->
+    <!-- Original vein color (subtle warm gold), with a transparent base -->
     <linearGradient id="goldVein" x1="0" x2="1">
       <stop offset="0" stop-color="#f9eecd" stop-opacity="0"/>
       <stop offset="0.45" stop-color="#f6e4b0" stop-opacity="0.7"/>
       <stop offset="1" stop-color="#d4af37" stop-opacity="0.9"/>
     </linearGradient>
 
-    <filter id="marbleNoise" x="-50%" y="-50%" width="200%" height="200%">
-      <feTurbulence baseFrequency="0.0085" numOctaves="4" seed="7" result="t"/>
-      <feDisplacementMap in="SourceGraphic" in2="t" scale="120" xChannelSelector="R" yChannelSelector="G"/>
-      <feColorMatrix type="saturate" values="0.7"/>
+    <filter id="marbleFlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="4" seed="19" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.9 0
+      " result="noiseA"/>
+      <feDisplacementMap in="SourceGraphic" in2="noiseA" scale="78" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.85 0
+      " result="a"/>
+      <feMerge>
+        <feMergeNode in="a"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
   </defs>
 
-  <rect width="100%" height="100%" fill="url(#gBase)"/>
+  <!-- No base fill (transparent). The site canvas comes from CSS. -->
 
-  <!-- subtle gold veins -->
-  <g filter="url(#marbleNoise)" opacity="0.28" mix-blend-mode="screen">
-    <path d="M-200 450 C300 220, 700 560, 1150 420 S1900 520, 2400 430" stroke="url(#goldVein)" stroke-width="18" fill="none" stroke-linecap="round"/>
-    <path d="M-200 950 C250 820, 700 1100, 1200 980 S1900 1030, 2400 950" stroke="url(#goldVein)" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <path d="M-200 1400 C300 1240, 800 1500, 1350 1360 S1950 1480, 2400 1400" stroke="url(#goldVein)" stroke-width="12" fill="none" stroke-linecap="round"/>
-  </g>
+  <!-- Marble veins only (cool blue accents) -->
+  <g filter="url(#marbleFlow)" style="mix-blend-mode: screen" opacity="0.55">
+    <path d="M-240 410 C240 230, 620 560, 980 440 S1680 560, 2360 410" stroke="url(#goldVein)" stroke-width="14" fill="none" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M-240 560 C260 420, 660 760, 1030 640 S1710 740, 2360 590" stroke="url(#goldVein)" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.78"/>
 
-  <!-- faint texture -->
-  <g opacity="0.06" fill="none" stroke="#ffffff">
-    <path d="M0 0 L2048 0 L2048 2048 L0 2048 Z"/>
+    <path d="M-240 910 C280 710, 680 1040, 1120 930 S1780 1060, 2360 910" stroke="url(#goldVein)" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.74"/>
+    <path d="M-240 1060 C300 930, 760 1210, 1200 1100 S1820 1260, 2360 1160" stroke="url(#goldVein)" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.68"/>
+
+    <path d="M-240 1360 C280 1220, 760 1520, 1280 1400 S1840 1540, 2360 1480" stroke="url(#goldVein)" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.64"/>
+    <path d="M-240 1520 C320 1430, 780 1690, 1340 1560 S1880 1720, 2360 1660" stroke="url(#goldVein)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.58"/>
+
+    <!-- subtle micro fractures (warm, very faint) -->
+    <path d="M260 260 C320 320, 370 410, 440 560" stroke="rgba(255,242,201,0.12)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M1510 320 C1460 390, 1400 510, 1340 690" stroke="rgba(255,242,201,0.1)" stroke-width="2" fill="none" stroke-linecap="round"/>
   </g>
 </svg>

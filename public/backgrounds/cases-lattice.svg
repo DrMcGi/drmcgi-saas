@@ -10,7 +10,7 @@
       <stop offset="1" stop-color="#FFE7C0" stop-opacity="0.28"/>
     </linearGradient>
   </defs>
-  <rect width="1400" height="900" fill="url(#casesBase)"/>
+  <rect width="1400" height="900" fill="none"/>
   <g opacity="0.32" stroke="url(#casesLines)" stroke-width="1.2">
     <path d="M160 160L1240 160" stroke-dasharray="20 16"/>
     <path d="M160 320L1240 320" stroke-dasharray="24 18"/>

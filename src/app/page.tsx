@@ -15,12 +15,14 @@ import Preloader from "@/components/Preloader";
 import LiveWallpaper from "@/components/LiveWallpaper";
 import BackToTop from "@/components/BackToTop";
 import GuidanceBot from "@/components/GuidanceBot";
+import CinematicWebGLClient from "@/components/CinematicWebGLClient";
 
 export default function Page() {
   return (
     <>
       <Nav />
       <Preloader />
+      <CinematicWebGLClient />
       <LiveWallpaper />
       <GuidanceBot />
       <main id="home" className="pt-20">

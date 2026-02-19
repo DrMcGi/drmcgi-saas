@@ -14,7 +14,10 @@ function isLowPowerDevice() {
   const mem = typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined;
   const saveData = Boolean(nav.connection?.saveData);
 
-  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4);
+  const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+  const smallViewport = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 640px)").matches;
+
+  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4) || (coarsePointer && smallViewport);
 }
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
@@ -202,6 +205,18 @@ export default function LiveWallpaper() {
 
   const disableMotion = Boolean(prefersReducedMotion) || lowPower;
 
+  const fxVars = useMemo(() => {
+    const alpha = lowPower ? 0.9 : 1;
+    const filter = disableMotion
+      ? "saturate(1.5) contrast(1.34) brightness(1.27)"
+      : "saturate(1.98) contrast(1.5) brightness(1.32)";
+
+    return {
+      "--wallpaper-alpha": String(alpha),
+      "--wallpaper-filter": filter
+    } as React.CSSProperties;
+  }, [lowPower, disableMotion]);
+
   const activeWalkers = useMemo(() => {
     if (!lowPower) return WALKERS;
 
@@ -211,7 +226,7 @@ export default function LiveWallpaper() {
   }, [lowPower]);
 
   return (
-    <div className="live-wallpaper" aria-hidden="true">
+    <div className="live-wallpaper" aria-hidden="true" style={fxVars}>
       <motion.div
         className="atlas-orb"
         style={{ willChange: disableMotion ? undefined : "transform, opacity" }}

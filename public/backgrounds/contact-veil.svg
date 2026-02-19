@@ -12,7 +12,6 @@
     </linearGradient>
   </defs>
   <rect width="1400" height="900" fill="#02040A"/>
-  <rect width="1400" height="900" fill="url(#contactCore)"/>
   <path d="M-60 620C180 540 360 580 560 560C760 540 960 440 1220 500C1380 536 1500 620 1500 620V940H-60V620Z" fill="url(#contactSweep)" fill-opacity="0.16"/>
   <path d="M200 360C360 260 540 300 720 360C900 420 1100 400 1280 320" stroke="#FFE7C0" stroke-opacity="0.18" stroke-width="2" stroke-linecap="round" stroke-dasharray="12 32"/>
 </svg>

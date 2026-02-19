@@ -15,7 +15,10 @@ function isLowPowerDevice() {
   const mem = typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined;
   const saveData = Boolean(nav.connection?.saveData);
 
-  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4);
+  const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+  const smallViewport = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 640px)").matches;
+
+  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4) || (coarsePointer && smallViewport);
 }
 
 type Variant =
@@ -382,6 +385,30 @@ export default function BackgroundManager({ variant = "hero" }: { variant?: Vari
 
   const disableMotion = prefersReducedMotion || lowPower;
 
+  const fxVars = useMemo(() => {
+    if (lowPower) {
+      return {
+        "--bgfx-saturate": "1.44",
+        "--bgfx-contrast": "1.32",
+        "--bgfx-brightness": "1.26"
+      } as CSSProperties;
+    }
+
+    if (prefersReducedMotion) {
+      return {
+        "--bgfx-saturate": "1.54",
+        "--bgfx-contrast": "1.34",
+        "--bgfx-brightness": "1.27"
+      } as CSSProperties;
+    }
+
+    return {
+      "--bgfx-saturate": "1.7",
+      "--bgfx-contrast": "1.46",
+      "--bgfx-brightness": "1.32"
+    } as CSSProperties;
+  }, [lowPower, prefersReducedMotion]);
+
   const layers = useMemo(() => {
     const baseLayers = LAYERS[variant] ?? [];
     if (!disableMotion) {
@@ -410,6 +437,7 @@ export default function BackgroundManager({ variant = "hero" }: { variant?: Vari
           key={layer.key ?? index}
           className={layer.className}
           style={{
+            ...fxVars,
             ...layer.style,
             willChange: !disableMotion && layer.animate ? "transform, opacity" : undefined
           }}

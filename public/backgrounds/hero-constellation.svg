@@ -17,7 +17,6 @@
     </linearGradient>
   </defs>
   <rect width="1600" height="900" fill="#03050B"/>
-  <rect width="1600" height="900" fill="url(#heroGlow)"/>
   <path d="M-40 720C240 520 520 860 800 640C1080 420 1260 160 1640 340" stroke="url(#heroAurora)" stroke-width="120" stroke-opacity="0.22"/>
   <path d="M180 640C420 470 700 520 940 380" stroke="url(#heroArc)" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 24"/>
   <path d="M320 220C520 120 780 140 980 260" stroke="url(#heroArc)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 18"/>
