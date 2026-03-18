@@ -201,22 +201,26 @@ export default function Contact() {
             </div>
           )}
 
-          <div className="contact-controls">
-            <button
-              type="button"
-              onClick={() => setStep((current) => Math.max(1, current - 1))}
-              className={`btn-ghost text-xs ${step === 1 ? "hidden" : ""}`}
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep((current) => Math.min(4, current + 1))}
-              className={`btn-gold text-xs ${step === 4 ? "hidden" : ""}`}
-            >
-              Next
-            </button>
-          </div>
+          {step < 4 && (
+            <div className={`contact-controls ${step === 1 ? "justify-end" : ""}`}>
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setStep((current) => Math.max(1, current - 1))}
+                  className="btn-ghost text-xs"
+                >
+                  Back
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setStep((current) => Math.min(4, current + 1))}
+                className="btn-gold text-xs"
+              >
+                Next
+              </button>
+            </div>
+          )}
 
           {step === 4 && (
             <div className="flex flex-wrap justify-center gap-4">

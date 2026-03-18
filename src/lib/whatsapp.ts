@@ -47,7 +47,7 @@ export type WhatsAppContext = {
 };
 
 export function buildWhatsAppMessage(context: WhatsAppContext) {
-  const lines: string[] = ["DrMcGi SaaS Concierge Blueprint"];
+  const lines: string[] = ["DrMcGi's SaaS Atelier (Pty) Ltd Concierge Blueprint"];
 
   if (context.origin) {
     lines.push(`Origin: ${context.origin}`);

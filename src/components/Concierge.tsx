@@ -202,7 +202,7 @@ export default function Concierge() {
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp-float"
-        title="Start a WhatsApp conversation with DrMcGi's SaaS Co."
+        title="Start a WhatsApp conversation with DrMcGi's SaaS Atelier (Pty) Ltd"
       >
         <span className="whatsapp-float-icon" aria-hidden>
           <WhatsAppMark />

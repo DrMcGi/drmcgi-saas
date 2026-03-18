@@ -38,7 +38,7 @@ export default function Nav() {
       <BackgroundManager variant="nav" />
       <div className="nav-inner">
         <a href="#home" className="nav-logo" onClick={handleScrollTop}>
-          <span className="nav-logo-main">DrMcGi&apos;s SaaS Co.</span>
+          <span className="nav-logo-main">DrMcGi&apos;s SaaS Atelier (Pty) Ltd</span>
           <span className="nav-logo-tag">Luxury software assured</span>
         </a>
 

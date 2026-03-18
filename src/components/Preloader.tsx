@@ -42,7 +42,7 @@ export default function Preloader() {
             animate={{ scale: [0.92, 1, 0.96, 1], opacity: 1 }}
             transition={{ duration: 1.4, repeat: Infinity, repeatType: "reverse" }}
           >
-            <div className="preloader-title">DrMcGi&apos;s SaaS Co.</div>
+            <div className="preloader-title">DrMcGi&apos;s SaaS Atelier (Pty) Ltd</div>
             <motion.div
               className="preloader-bot"
               aria-hidden

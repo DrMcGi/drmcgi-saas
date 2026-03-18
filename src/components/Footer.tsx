@@ -89,7 +89,7 @@ export default function Footer() {
         <section className="space-y-3">
           <p className="overline">Private client wing</p>
           <p className="text-white/70 text-sm leading-relaxed">
-            DrMcGi&apos;s SaaS Co. crafts couture digital ecosystems for leaders who demand cinematic polish and measurable
+            DrMcGi&apos;s SaaS Atelier (Pty) Ltd crafts couture digital ecosystems for leaders who demand cinematic polish and measurable
             outcomes.
           </p>
           <Link href="#contact" className="btn-gold text-xs w-max">Request blueprint</Link>
@@ -136,7 +136,7 @@ export default function Footer() {
           <Link href="#concierge" className="btn-ghost text-xs w-max">Open concierge</Link>
         </section>
       </div>
-      <div className="footer-bottom">© {new Date().getFullYear()} DrMcGi&apos;s SaaS Co. Luxury software assured.</div>
+      <div className="footer-bottom">© {new Date().getFullYear()} DrMcGi&apos;s SaaS Atelier (Pty) Ltd • Reg No: 2026/093277/07</div>
     </footer>
   );
 }
