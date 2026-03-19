@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 250" role="img" aria-label="DrMcGi’s SaaS Atelier logo">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7d87b" />
+      <stop offset="45%" stop-color="#ffe8b4" />
+      <stop offset="100%" stop-color="#f0be4d" />
+    </linearGradient>
+
+    <linearGradient id="neonGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7df9ff" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#a1ffe9" stop-opacity="0" />
+    </linearGradient>
+
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="BLUR" />
+      <feMerge>
+        <feMergeNode in="BLUR" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="ambient" x="-40%" y="-40%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="BLUR" />
+      <feColorMatrix in="BLUR" type="matrix" values="1 0 0 0 0.11 0 1 0 0 0.17 0 0 1 0 0.35 0 0 0 0.82 0" />
+    </filter>
+
+    <filter id="soft" x="-40%" y="-40%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="BLUR" />
+      <feFlood flood-color="#ffffff" flood-opacity="0.18" />
+      <feComposite in2="BLUR" operator="in" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <mask id="textMask">
+      <rect width="100%" height="100%" fill="white" />
+      <text x="50%" y="48%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="800" font-size="58" letter-spacing="0.04em" fill="black">
+        DrMcGi’s
+      </text>
+      <text x="50%" y="78%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="800" font-size="60" letter-spacing="0.04em" fill="black">
+        SaaS Atelier
+      </text>
+    </mask>
+  </defs>
+
+  <rect width="100%" height="100%" fill="transparent" />
+
+  <!-- Ambient glow halo -->
+  <circle cx="460" cy="125" r="132" fill="url(#neonGlow)" filter="url(#ambient)" />
+
+  <!-- Logo mark bokeh halo -->
+  <circle cx="190" cy="120" r="68" fill="url(#goldGrad)" filter="url(#glow)" opacity="0.92" />
+  <circle cx="190" cy="120" r="48" fill="#020409" opacity="0.88" />
+
+  <!-- Mark accents -->
+  <path d="M160 120 C160 90 220 90 220 120 C220 150 160 150 160 120 Z" fill="url(#goldGrad)" filter="url(#soft)" opacity="0.88" />
+  <path d="M176 108 L204 108 L204 132 L176 132 Z" fill="rgba(255,255,255,0.08)" />
+
+  <!-- Brand wordmark with gradient and glow -->
+  <g filter="url(#glow)">
+    <text x="52%" y="48%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="58" letter-spacing="0.045em" fill="url(#goldGrad)">
+      DrMcGi’s
+    </text>
+    <text x="52%" y="78%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="60" letter-spacing="0.045em" fill="url(#goldGrad)">
+      SaaS Atelier
+    </text>
+  </g>
+
+  <!-- Small corporate line -->
+  <text x="52%" y="92%" text-anchor="middle" font-family="Neue Haas Grotesk, Inter, sans-serif" font-size="14" letter-spacing="0.12em" fill="#ffffff" fill-opacity="0.72">
+    (Pty) Ltd • 2026/093277/07
+  </text>
+
+  <!-- Subtle signature lines to echo the site’s “glass” style -->
+  <g opacity="0.35" transform="translate(0, 10)">
+    <path d="M56 164 C220 180 420 140 680 168" stroke="url(#neonGlow)" stroke-width="1.4" fill="none" />
+    <path d="M72 176 C252 192 460 158 720 182" stroke="rgba(247,216,123,0.18)" stroke-width="1.2" fill="none" />
+  </g>
+</svg>

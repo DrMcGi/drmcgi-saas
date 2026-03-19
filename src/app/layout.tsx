@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 const siteUrl = getSiteUrl();
+const logoUrl = new URL("/logo.svg", siteUrl).toString();
 const businessPhoneE164 = "+27649211745";
 const businessName = "DrMcGi's SaaS Atelier (Pty) Ltd";
 const businessRegistrationNumber = "2026/093277/07";
@@ -74,7 +75,12 @@ export const metadata: Metadata = {
     title: "DrMcGi's SaaS Atelier (Pty) Ltd — Luxury software. Real business impact.",
     description:
       "DrMcGi's SaaS Atelier (Pty) Ltd builds luxury web services, SaaS products, and enterprise IT systems with a concierge experience—South Africa & global.",
-    images: [{ url: "/backgrounds/hero-bg.svg" }],
+    images: [
+      {
+        url: logoUrl,
+        alt: "DrMcGi's SaaS Atelier logo"
+      }
+    ],
     locale: "en_ZA"
   },
   twitter: {
@@ -82,7 +88,12 @@ export const metadata: Metadata = {
     title: "DrMcGi's SaaS Atelier (Pty) Ltd — Luxury software. Real business impact.",
     description:
       "DrMcGi's SaaS Atelier (Pty) Ltd builds luxury web services, SaaS products, and enterprise IT systems with a concierge experience—South Africa & global.",
-    images: ["/backgrounds/hero-bg.svg"],
+    images: [
+      {
+        url: logoUrl,
+        alt: "DrMcGi's SaaS Atelier logo"
+      }
+    ],
     creator: "@drmcgisaasco"
   }
 };
