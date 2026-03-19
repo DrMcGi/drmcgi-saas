@@ -6,6 +6,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 const siteUrl = getSiteUrl();
 const logoUrl = new URL("/logo.svg", siteUrl).toString();
+const faviconUrl = new URL("/favicon.svg", siteUrl).toString();
 const businessPhoneE164 = "+27649211745";
 const businessName = "DrMcGi's SaaS Atelier (Pty) Ltd";
 const businessRegistrationNumber = "2026/093277/07";
@@ -67,6 +68,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
       "max-video-preview": -1
     }
+  },
+  icons: {
+    icon: faviconUrl,
+    shortcut: faviconUrl,
+    apple: faviconUrl
   },
   openGraph: {
     type: "website",
