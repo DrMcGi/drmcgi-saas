@@ -1,19 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 250" role="img" aria-label="DrMcGi’s SaaS Atelier logo">
   <defs>
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7d87b" />
-      <stop offset="38%" stop-color="#ffe8b4" />
-      <stop offset="70%" stop-color="#f0be4d" />
-      <stop offset="100%" stop-color="#ffe8b4" />
+      <stop offset="0%" stop-color="#ffdf7c" />
+      <stop offset="38%" stop-color="#fff5c8" />
+      <stop offset="70%" stop-color="#f8c64d" />
+      <stop offset="100%" stop-color="#ffdf7c" />
     </linearGradient>
 
     <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#f7d87b" stop-opacity="0.98" />
       <stop offset="55%" stop-color="#9be7ff" stop-opacity="0.72" />
-      <stop offset="100%" stop-color="#f7d87b" stop-opacity="0.0" />
+      <stop offset="100%" stop-color="#f7d87b" stop-opacity="0" />
     </linearGradient>
 
     <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="BLUR" />
+      <feMerge>
+        <feMergeNode in="BLUR" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="textGlow" x="-90%" y="-90%" width="280%" height="280%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="BLUR" />
       <feMerge>
         <feMergeNode in="BLUR" />
@@ -72,12 +80,12 @@
     <path d="M202 100 L230 78" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" />
   </g>
 
-  <!-- Brand wordmark with subtle specular accents -->
-  <g filter="url(#specular)">
-    <text x="52%" y="48%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="64" letter-spacing="0.04em" fill="url(#goldGrad)" stroke="rgba(255,255,255,0.16)" stroke-width="0.8">
+  <!-- Brand wordmark with bold gold demand -->
+  <g filter="url(#textGlow)">
+    <text x="52%" y="48%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="70" letter-spacing="0.04em" fill="url(#goldGrad)" stroke="rgba(255,255,255,0.22)" stroke-width="1">
       DrMcGi’s
     </text>
-    <text x="52%" y="76%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="66" letter-spacing="0.04em" fill="url(#goldGrad)" stroke="rgba(255,255,255,0.16)" stroke-width="0.8">
+    <text x="52%" y="76%" text-anchor="middle" font-family="Clash Display, Playfair Display, serif" font-weight="900" font-size="72" letter-spacing="0.04em" fill="url(#goldGrad)" stroke="rgba(255,255,255,0.22)" stroke-width="1">
       SaaS Atelier
     </text>
   </g>
