@@ -4,38 +4,38 @@ import BackgroundManager from "@/components/BackgroundManager";
 
 const PHASES = [
   {
-    title: "Immersion",
-    subtitle: "Executive discovery",
+    title: "Discover",
+    subtitle: "Understand your business",
     copy:
-      "Joint workshops, brand anthropology, and market field notes translate your north star into tangible product angles.",
-    stat: "2 weeks"
+      "We meet with you to learn your business, your customers, and your goals, so the project is built the right way from day one.",
+    stat: "1-2 weeks"
   },
   {
-    title: "Blueprint",
-    subtitle: "Narrative architecture",
+    title: "Plan",
+    subtitle: "Clear project roadmap",
     copy:
-      "Storyboarded journeys, data hierarchy, and motion language. Immersive prototypes validate resonance before code.",
-    stat: "Fidelity deck"
+      "We map what will be built, in what order, and what success looks like in simple terms everyone can follow.",
+    stat: "Written plan"
   },
   {
-    title: "Couture Build",
-    subtitle: "Engineering in movements",
+    title: "Build",
+    subtitle: "Design and code",
     copy:
-      "Sprints orchestrated like a production crew. Design systems, scalable APIs, and instrumentation advance together.",
-    stat: "Ship cadence"
+      "Design, development, and testing run together. You get early previews and can give feedback before launch.",
+    stat: "Sprint cycles"
   },
   {
-    title: "Premiere",
-    subtitle: "Launch choreography",
+    title: "Launch",
+    subtitle: "Go live with confidence",
     copy:
-      "Full instrumentation, QA theatre, rehearsal deployments, and go-live concierge that feels effortless for leadership.",
-    stat: "White-glove"
+      "We prepare your site/app for real users, check everything works, and then launch with support on standby.",
+    stat: "Launch support"
   },
   {
-    title: "Legacy",
-    subtitle: "Growth councils",
+    title: "Grow",
+    subtitle: "Improve and expand",
     copy:
-      "Quarterly data salons, rapid optimisation, and opportunity scouting to preserve momentum and halo.",
+      "After launch we check performance, add improvements, and help you find new ways to get more leads and sales.",
     stat: "Ongoing"
   }
 ];
@@ -54,7 +54,7 @@ export default function ExperienceAtlas() {
             transition={{ duration: 0.9 }}
             className="vision-title"
           >
-            A cinematic delivery arc, from immersion to legacy.
+            Simple steps from first idea to a live website or product.
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 18 }}
@@ -63,8 +63,7 @@ export default function ExperienceAtlas() {
             transition={{ duration: 0.9, delay: 0.1 }}
             className="vision-body mx-auto"
           >
-            Together we choreograph a release that feels inevitable—every phase orchestrated with executive clarity,
-            proof, and polish.
+            No jargon. Every stage is explained, with clear progress updates, so you always know what’s next.
           </motion.p>
         </div>
 
