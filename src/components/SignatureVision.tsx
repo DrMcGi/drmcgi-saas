@@ -1,12 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 
 export default function SignatureVision() {
   return (
     <section id="vision" className="mx-auto max-w-6xl px-6 py-24">
       <div className="section-frame vision-grid relative overflow-hidden">
-        <BackgroundManager variant="vision" />
         <div className="space-y-4">
           <p className="overline">The DrMcGi Thesis</p>
           <motion.h2

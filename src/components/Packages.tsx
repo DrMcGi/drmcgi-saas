@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 import { useApp } from "@/lib/store";
 
 const FEATURE_MAP: Record<string, string> = {
@@ -52,7 +51,6 @@ export default function Packages() {
   return (
     <section id="packages" className="mx-auto max-w-6xl px-6 py-24">
       <div className="section-frame space-y-10 relative overflow-hidden">
-        <BackgroundManager variant="packages" />
         <div className="space-y-3">
           <p className="overline">Tailored packages</p>
           <motion.h2

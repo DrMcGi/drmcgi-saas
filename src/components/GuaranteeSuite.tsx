@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 
 const PILLARS = [
   {
@@ -27,7 +26,6 @@ export default function GuaranteeSuite() {
         transition={{ duration: 0.9 }}
         className="guarantee-band relative overflow-hidden"
       >
-        <BackgroundManager variant="guarantee" />
         <p className="overline">The assurance suite</p>
         <h2 className="vision-title text-3xl sm:text-4xl">What every private client receives.</h2>
         <div className="guarantee-grid">

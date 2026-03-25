@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import BackgroundManager from "@/components/BackgroundManager";
 import { useApp } from "@/lib/store";
 import { createWhatsAppLink } from "@/lib/whatsapp";
 
@@ -130,7 +129,6 @@ export default function Concierge() {
           className="dock-panel open relative overflow-hidden"
           style={{ maxHeight: "min(82vh, 640px)", width: "min(92vw, 340px)" }}
         >
-          <BackgroundManager variant="concierge" />
           <div className="dock-panel-scroll">
             <div className="dock-panel-header">
               <div className="space-y-1">

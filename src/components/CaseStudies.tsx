@@ -2,7 +2,6 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import BackgroundManager from "@/components/BackgroundManager";
 
 type Study = {
   title: string;
@@ -43,7 +42,6 @@ const CASES: Study[] = [
 export default function CaseStudies() {
   return (
     <section id="case-studies" className="mx-auto max-w-6xl px-6 py-24 relative overflow-hidden">
-      <BackgroundManager variant="cases" />
       <div className="space-y-4 text-center">
         <p className="overline">Flagship work</p>
         <motion.h2

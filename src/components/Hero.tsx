@@ -1,9 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 import MotionBackgrounds from "@/components/MotionBackgrounds";
-import ShimmerText from "@/components/ShimmerText";
 import GoldDivider from "@/components/GoldDivider";
 
 const TICKER = [
@@ -67,9 +65,7 @@ export default function Hero() {
 
   return (
     <section id="home" className="hero-shell">
-      <BackgroundManager variant="hero" />
       <MotionBackgrounds />
-      <div className="hero-caustics" aria-hidden />
 
       <motion.div
         initial={{ opacity: 0, y: 32 }}
@@ -94,7 +90,7 @@ export default function Hero() {
         >
           <span className="block">Luxury software.</span>
           <span className="block">
-            <ShimmerText>Real business impact.</ShimmerText>
+            Real business impact.
           </span>
         </motion.h1>
 

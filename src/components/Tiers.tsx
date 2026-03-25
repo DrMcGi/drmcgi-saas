@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 import { useApp } from "@/lib/store";
 
 const fmt = new Intl.NumberFormat("en-US");
@@ -45,7 +44,6 @@ export default function Tiers() {
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-6 py-24">
       <div className="section-frame space-y-8 relative overflow-hidden">
-        <BackgroundManager variant="tiers" />
         <div className="space-y-3">
           <p className="overline">Investment tiers</p>
           <motion.h2

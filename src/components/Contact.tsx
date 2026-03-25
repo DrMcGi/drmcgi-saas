@@ -1,7 +1,6 @@
 "use client";
 import { FormEvent, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 import ShimmerText from "@/components/ShimmerText";
 import { useApp } from "@/lib/store";
 import { createWhatsAppLink, formatBudget } from "@/lib/whatsapp";
@@ -27,7 +26,6 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative mx-auto max-w-6xl px-6 py-24">
-      <BackgroundManager variant="contact" />
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}

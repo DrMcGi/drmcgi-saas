@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useSpring, useMotionValueEvent } from "framer-motion";
 import type { Options as ConfettiOptions } from "canvas-confetti";
 import { useApp } from "@/lib/store";
-import BackgroundManager from "@/components/BackgroundManager";
 
 type Feature = {
   id: string;
@@ -109,7 +108,6 @@ export default function Configurator() {
 
   return (
     <section id="configurator" className="relative mx-auto max-w-6xl px-6 py-24">
-      <BackgroundManager variant="configurator" />
 
       <div className="grid gap-10 relative">
         <motion.div

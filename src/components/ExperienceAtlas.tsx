@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import BackgroundManager from "@/components/BackgroundManager";
 
 const PHASES = [
   {
@@ -44,7 +43,6 @@ export default function ExperienceAtlas() {
   return (
     <section id="atlas" className="mx-auto max-w-6xl px-6 py-24">
       <div className="section-frame space-y-10 relative overflow-hidden">
-        <BackgroundManager variant="atlas" />
         <div className="space-y-3 text-center">
           <p className="overline">Experience atlas</p>
           <motion.h2
