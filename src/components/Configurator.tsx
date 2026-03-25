@@ -15,25 +15,25 @@ type Feature = {
 };
 
 const FEATURES: Feature[] = [
-  { id: "responsive", name: "Responsive Design", price: 8000, category: "website", desc: "Mobile‑first, pixel‑perfect layouts." },
-  { id: "seo", name: "SEO Optimization", price: 6000, category: "website", desc: "Metadata, schema, performance tuning." },
-  { id: "cms", name: "CMS Integration", price: 12000, category: "website", desc: "Headless CMS or custom admin." },
-  { id: "luxuryUI", name: "Luxury UI/UX System", price: 15000, category: "website", desc: "Design tokens, motion, editorial spacing." },
-  { id: "ecommerce", name: "E‑commerce Setup", price: 20000, category: "website", desc: "Catalog, cart, checkout, payments." },
-  { id: "analytics", name: "Analytics & Tracking", price: 5000, category: "website", desc: "GA4, events, funnels." },
-  { id: "mvp", name: "MVP Core", price: 35000, category: "saas", desc: "Auth, dashboard, CRUD flows." },
-  { id: "api", name: "Scalable API Architecture", price: 25000, category: "saas", desc: "Node/Nest services." },
-  { id: "cicd", name: "CI/CD Pipelines", price: 10000, category: "saas", desc: "Automation, deployments." },
-  { id: "observability", name:"Observability & Monitoring", price: 12000, category: "saas", desc: "Logs, metrics, alerts." },
-  { id: "multitenant", name: "Multi‑Tenant Support", price: 18000, category: "saas", desc: "Orgs, roles, permissions." },
-  { id: "payments", name: "Payment & Subscription Systems", price: 15000, category: "saas", desc: "Stripe/PayPal." },
-  { id: "ai", name: "AI Concierge", price: 22000, category: "custom", desc: "Branded assistant, support." },
-  { id: "integrations", name: "Integrations Suite", price: 24000, category: "custom", desc: "WhatsApp, CRM, ERP." },
-  { id: "ops", name: "Automation & DevOps", price: 26000, category: "custom", desc: "Pipelines, monitoring." },
-  { id: "security", name: "Security Layer", price: 20000, category: "custom", desc: "Auth hardening, secrets." },
-  { id: "workflows", name: "Enterprise Workflows", price: 18000, category: "custom", desc: "Approvals, reporting." },
-  { id: "offline", name: "Offline‑First / Mobile Sync", price: 16000, category: "custom", desc: "PWA/RN sync." },
-  { id: "dashboards", name: "Custom Dashboards", price: 14000, category: "custom", desc: "Tailored KPIs." }
+  { id: "responsive", name: "Responsive Design", price: 8000, category: "website", desc: "Your website looks great on phones, tablets, and computers." },
+  { id: "seo", name: "SEO Optimization", price: 6000, category: "website", desc: "Make your website easy to find on Google and other search engines." },
+  { id: "cms", name: "CMS Integration", price: 12000, category: "website", desc: "Easy way to add and edit content on your website without coding." },
+  { id: "luxuryUI", name: "Luxury UI/UX System", price: 15000, category: "website", desc: "Beautiful design that looks professional and modern." },
+  { id: "ecommerce", name: "E‑commerce Setup", price: 20000, category: "website", desc: "Sell products online with a shopping cart and payment system." },
+  { id: "analytics", name: "Analytics & Tracking", price: 5000, category: "website", desc: "Track how many people visit your site and what they do." },
+  { id: "mvp", name: "MVP Core", price: 35000, category: "saas", desc: "Basic app with login, dashboard, and data management." },
+  { id: "api", name: "Scalable API Architecture", price: 25000, category: "saas", desc: "Connect your app to other systems securely." },
+  { id: "cicd", name: "CI/CD Pipelines", price: 10000, category: "saas", desc: "Automatic updates and testing for your app." },
+  { id: "observability", name:"Observability & Monitoring", price: 12000, category: "saas", desc: "Monitor your app's performance and get alerts if something goes wrong." },
+  { id: "multitenant", name: "Multi‑Tenant Support", price: 18000, category: "saas", desc: "Support multiple users or teams with different access levels." },
+  { id: "payments", name: "Payment & Subscription Systems", price: 15000, category: "saas", desc: "Handle payments and subscriptions easily." },
+  { id: "ai", name: "AI Concierge", price: 22000, category: "custom", desc: "Smart chatbot to help your customers." },
+  { id: "integrations", name: "Integrations Suite", price: 24000, category: "custom", desc: "Connect to WhatsApp, customer management, and business tools." },
+  { id: "ops", name: "Automation & DevOps", price: 26000, category: "custom", desc: "Automate tasks and keep your systems running smoothly." },
+  { id: "security", name: "Security Layer", price: 20000, category: "custom", desc: "Keep your app safe with strong security." },
+  { id: "workflows", name: "Enterprise Workflows", price: 18000, category: "custom", desc: "Advanced processes for big businesses." },
+  { id: "offline", name: "Offline‑First / Mobile Sync", price: 16000, category: "custom", desc: "Works offline and syncs data on mobile." },
+  { id: "dashboards", name: "Custom Dashboards", price: 14000, category: "custom", desc: "Custom reports showing your business metrics." }
 ];
 
 const fmt = new Intl.NumberFormat("en-US");
@@ -122,8 +122,8 @@ export default function Configurator() {
           <p className="overline">Configurable couture</p>
           <h2 className="text-3xl md:text-4xl">Compose your build with modules tuned for legacy impact.</h2>
           <p className="text-white/70 max-w-2xl">
-            Toggle modules to craft a signature blueprint. Pricing updates in real time, including concierge uplift when
-            we blend luxury UI and AI experiences.
+            Pick features in plain language and see live costs at every step. This is a business-first builder for local
+            organisations, with optional concierge support if you want a premium hand-holding path.
           </p>
         </motion.div>
 
