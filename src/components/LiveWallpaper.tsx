@@ -16,8 +16,10 @@ function isLowPowerDevice() {
 
   const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
   const smallViewport = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 640px)").matches;
+  const mobileLikeDevice = coarsePointer || smallViewport;
 
-  return saveData || (typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4) || (coarsePointer && smallViewport);
+  // Keep desktop visuals vivid even on modest hardware; reserve low-power mode for mobile/data-saver contexts.
+  return saveData || (mobileLikeDevice && ((typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4)));
 }
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
@@ -36,9 +38,11 @@ type WalkerProps = WalkerConfig & { disableMotion: boolean };
 
 const WALKERS: WalkerConfig[] = [
   { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 1 },
+  { id: "bot-b", type: "bot", yRange: [22, 54], driftRange: [-6, 7], speedRange: [20, 28], pauseRange: [3200, 6200], scale: 0.9 },
   { id: "scout", type: "scout", yRange: [12, 36], driftRange: [-5, 5], speedRange: [16, 22], pauseRange: [2400, 4600], scale: 0.78 },
   { id: "terminal", type: "terminal", yRange: [58, 82], driftRange: [-4, 6], speedRange: [22, 32], pauseRange: [3400, 6200], scale: 1.08 },
   { id: "cheese", type: "cheese", yRange: [18, 44], driftRange: [-6, 5], speedRange: [20, 28], pauseRange: [2800, 5200], scale: 0.92 },
+  { id: "cheese-b", type: "cheese", yRange: [36, 68], driftRange: [-5, 5], speedRange: [24, 32], pauseRange: [3600, 6800], scale: 0.88 },
   { id: "pizza", type: "pizza", yRange: [44, 72], driftRange: [-7, 6], speedRange: [24, 34], pauseRange: [3200, 5800], scale: 1 }
 ];
 
@@ -151,8 +155,8 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
 
   const motionProps = disableMotion
     ? {
-        initial: { opacity: 0.4, x: `${(motionConfig.startY % 36) - 18}vw`, y: `${motionConfig.startY}vh`, scale },
-        animate: { opacity: 0.32, x: `${(motionConfig.startY % 36) - 12}vw`, y: `${motionConfig.startY}vh`, scale },
+        initial: { opacity: 0.62, x: `${(motionConfig.startY % 36) - 18}vw`, y: `${motionConfig.startY}vh`, scale },
+        animate: { opacity: 0.5, x: `${(motionConfig.startY % 36) - 12}vw`, y: `${motionConfig.startY}vh`, scale },
         transition: { duration: 7, ease: "easeInOut" as const, repeat: Infinity, repeatType: "mirror" as const }
       }
     : {
@@ -160,7 +164,7 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
         animate: {
           x: ["-22vw", "118vw"],
           y: [`${motionConfig.startY}vh`, `${motionConfig.endY}vh`],
-          opacity: [0, 1, 1, 0],
+          opacity: [0, 0.95, 0.95, 0],
           rotate: [0, motionConfig.drift / 2, motionConfig.drift / 2, motionConfig.drift / 2],
           scale
         },
@@ -170,7 +174,7 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
           repeat: Infinity,
           repeatType: "loop" as const,
           repeatDelay: motionConfig.repeatDelay,
-          times: [0, 0.08, 0.92, 1],
+          times: [0, 0.04, 0.96, 1],
           delay: motionConfig.delayOffset
         }
       };

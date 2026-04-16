@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useApp } from "@/lib/store";
 import { createWhatsAppLink } from "@/lib/whatsapp";
@@ -21,6 +21,7 @@ export default function GuidanceBot() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [hovering, setHovering] = useState(false);
+  const visibleRef = useRef(false);
   const { selected, activeTier, activePackage } = useApp();
 
   const modulesList = useMemo(() => Array.from(selected).sort(), [selected]);
@@ -75,20 +76,20 @@ export default function GuidanceBot() {
       const hasPassedEntry = y >= entryThreshold - 40;
       const hasPassedExit = exitThreshold !== null && y >= exitThreshold;
       const nextVisible = hasPassedEntry && !hasPassedExit;
+      const isEntering = !visibleRef.current && nextVisible;
+
+      if (isEntering && isMobilePortrait) {
+        setDismissed(true);
+      }
+
+      visibleRef.current = nextVisible;
       setVisible((current) => (current === nextVisible ? current : nextVisible));
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [entryThreshold, exitThreshold]);
-
-  // On mobile, keep the bot collapsed to a pill — don't auto-open the full panel
-  useEffect(() => {
-    if (visible && isMobilePortrait) {
-      setDismissed(true);
-    }
-  }, [visible, isMobilePortrait]);
+  }, [entryThreshold, exitThreshold, isMobilePortrait]);
 
   const conciergeLink = useMemo(() => {
     const hasContext = modulesList.length > 0 || Boolean(activeTier) || Boolean(activePackage);

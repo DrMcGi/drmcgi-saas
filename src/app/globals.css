@@ -1172,8 +1172,23 @@ main {
   pointer-events: none;
 }
 
+.wallpaper-walker.bot,
+.wallpaper-walker.terminal,
+.wallpaper-walker.cheese,
+.wallpaper-walker.pizza {
+  filter:
+    saturate(1.22)
+    contrast(1.12)
+    brightness(1.2)
+    drop-shadow(0 0 14px rgba(247, 216, 123, 0.18))
+    drop-shadow(0 0 22px rgba(125, 249, 255, 0.16));
+}
+
 .wallpaper-walker.scout { width: 120px; height: 120px; }
-.wallpaper-walker.terminal { width: 160px; height: 160px; }
+.wallpaper-walker.terminal { width: 172px; height: 172px; }
+.wallpaper-walker.bot { width: 150px; height: 150px; }
+.wallpaper-walker.cheese,
+.wallpaper-walker.pizza { width: 152px; height: 152px; }
 
 .wallpaper-bot {
   position: relative;

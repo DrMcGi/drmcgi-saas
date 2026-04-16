@@ -1,5 +1,4 @@
-const fs = require('fs');
-const zlib = require('zlib');
+let crcTable;
 
 function crc32(buf) {
   let crc = -1;
@@ -9,7 +8,7 @@ function crc32(buf) {
   return (crc ^ -1) >>> 0;
 }
 
-const crcTable = (() => {
+function createCrcTable() {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
     let c = n;
@@ -20,7 +19,7 @@ const crcTable = (() => {
     table[n] = c >>> 0;
   }
   return table;
-})();
+}
 
 function pngChunk(type, data) {
   const typeBuf = Buffer.from(type, 'ascii');
@@ -32,7 +31,7 @@ function pngChunk(type, data) {
   return Buffer.concat([len, typeBuf, data, crcBuf]);
 }
 
-function createPng(w, h, pixelFn) {
+function createPng(w, h, pixelFn, zlib) {
   const pixels = Buffer.alloc(w * h * 4);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -91,38 +90,50 @@ function createIcoFromPng(pngBuf) {
   return Buffer.concat([header, entry, pngBuf]);
 }
 
-const w = 64;
-const h = 64;
+async function main() {
+  const fs = await import("node:fs");
+  const zlib = await import("node:zlib");
 
-const png = createPng(w, h, (x, y, w, h) => {
-  const bg = [2, 4, 9];
-  const cx = w * 0.5;
-  const cy = h * 0.5;
-  const dx = x - cx;
-  const dy = y - cy;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-  const radius = w * 0.36;
-  const inner = w * 0.18;
-  let r = bg[0], g = bg[1], b = bg[2], a = 1;
+  crcTable = createCrcTable();
 
-  if (dist < radius) {
-    const t = Math.max(0, Math.min(1, (radius - dist) / (radius - inner)));
-    const gold1 = [255, 223, 124];
-    r = Math.round(gold1[0] * t + r * (1 - t));
-    g = Math.round(gold1[1] * t + g * (1 - t));
-    b = Math.round(gold1[2] * t + b * (1 - t));
-  }
+  const w = 64;
+  const h = 64;
 
-  if (dist < inner) {
-    const t2 = 1 - dist / inner;
-    r = Math.round(255 * t2 + r * (1 - t2));
-    g = Math.round(223 * t2 + g * (1 - t2));
-    b = Math.round(124 * t2 + b * (1 - t2));
-  }
+  const png = createPng(w, h, (x, y, width, height) => {
+    const bg = [2, 4, 9];
+    const cx = width * 0.5;
+    const cy = height * 0.5;
+    const dx = x - cx;
+    const dy = y - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const radius = width * 0.36;
+    const inner = width * 0.18;
+    let r = bg[0], g = bg[1], b = bg[2], a = 1;
 
-  return [r, g, b, a];
+    if (dist < radius) {
+      const t = Math.max(0, Math.min(1, (radius - dist) / (radius - inner)));
+      const gold1 = [255, 223, 124];
+      r = Math.round(gold1[0] * t + r * (1 - t));
+      g = Math.round(gold1[1] * t + g * (1 - t));
+      b = Math.round(gold1[2] * t + b * (1 - t));
+    }
+
+    if (dist < inner) {
+      const t2 = 1 - dist / inner;
+      r = Math.round(255 * t2 + r * (1 - t2));
+      g = Math.round(223 * t2 + g * (1 - t2));
+      b = Math.round(124 * t2 + b * (1 - t2));
+    }
+
+    return [r, g, b, a];
+  }, zlib);
+
+  const ico = createIcoFromPng(png);
+  fs.writeFileSync("public/favicon.ico", ico);
+  console.log("Generated public/favicon.ico");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
 });
-
-const ico = createIcoFromPng(png);
-fs.writeFileSync('public/favicon.ico', ico);
-console.log('Generated public/favicon.ico');
