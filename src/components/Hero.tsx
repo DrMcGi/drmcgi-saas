@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import BackgroundManager from "@/components/BackgroundManager";
 import GoldDivider from "@/components/GoldDivider";
+import ShimmerText from "@/components/ShimmerText";
 
 const TICKER = [
   "92% client retention",
@@ -91,7 +92,7 @@ export default function Hero() {
         >
           <span className="block">Luxury software.</span>
           <span className="block">
-            Real business impact.
+            <ShimmerText>Real business impact.</ShimmerText>
           </span>
         </motion.h1>
 

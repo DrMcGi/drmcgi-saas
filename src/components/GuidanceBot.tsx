@@ -83,6 +83,13 @@ export default function GuidanceBot() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [entryThreshold, exitThreshold]);
 
+  // On mobile, keep the bot collapsed to a pill — don't auto-open the full panel
+  useEffect(() => {
+    if (visible && isMobilePortrait) {
+      setDismissed(true);
+    }
+  }, [visible, isMobilePortrait]);
+
   const conciergeLink = useMemo(() => {
     const hasContext = modulesList.length > 0 || Boolean(activeTier) || Boolean(activePackage);
     if (!hasContext) {
