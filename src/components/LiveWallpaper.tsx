@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
+import { ReactNode, useEffect, useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
 
@@ -16,20 +16,6 @@ type WalkerConfig = {
 };
 
 type WalkerProps = Omit<WalkerConfig, "id">;
-
-function isLowPowerDevice() {
-  if (typeof window === "undefined") return false;
-  const nav = navigator as Navigator & {
-    deviceMemory?: number;
-    connection?: { saveData?: boolean };
-  };
-
-  const cores = navigator.hardwareConcurrency;
-  const memory = nav.deviceMemory;
-  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
-
-  return Boolean(nav.connection?.saveData) || (isCoarsePointer && ((cores !== undefined && cores <= 4) || (memory !== undefined && memory <= 4)));
-}
 
 const WALKERS: WalkerConfig[] = [
   { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 0.65 },
@@ -156,14 +142,7 @@ function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: Wal
 }
 
 export default function LiveWallpaper() {
-  const prefersReducedMotion = useReducedMotion();
   const [clip, setClip] = useState({ top: 0, bottom: 0 });
-  const [lowPower, setLowPower] = useState(false);
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setLowPower(isLowPowerDevice()));
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -193,11 +172,6 @@ export default function LiveWallpaper() {
     };
   }, []);
 
-  const activeWalkers = useMemo(() => {
-    if (!lowPower && !prefersReducedMotion) return WALKERS;
-    return WALKERS.filter((walker) => walker.id === "bot");
-  }, [lowPower, prefersReducedMotion]);
-
   return (
     <div className="live-wallpaper" aria-hidden style={{ clipPath: `inset(${clip.top}px 0 ${clip.bottom}px)` }}>
       <motion.div
@@ -220,7 +194,7 @@ export default function LiveWallpaper() {
         transition={{ duration: 62, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {activeWalkers.map(({ id, ...config }) => (
+      {WALKERS.map(({ id, ...config }) => (
         <Walker key={id} {...config} />
       ))}
     </div>
