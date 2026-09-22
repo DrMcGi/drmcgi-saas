@@ -14,7 +14,7 @@ export default function SignatureVision() {
             transition={{ duration: 0.9 }}
             className="vision-title"
           >
-            Luxury-grade platforms engineered to feel inevitable.
+            Focused delivery. Professional systems. Measured business value.
           </motion.h2>
         </div>
 
@@ -25,9 +25,9 @@ export default function SignatureVision() {
           transition={{ duration: 0.9, delay: 0.1 }}
           className="vision-body"
         >
-          We translate brand mythology into product ecosystems. Every flow, animation, and service touchpoint is
-          choreographed to reinforce trust and performance—so your platform carries the gravitas of a legacy house
-          with the velocity of a modern venture.
+          DrMcGi&apos;s approach is rooted in clear focus, reliable delivery, and client-first execution. Every solution is
+          shaped to improve operational efficiency, strengthen digital confidence, and support sustainable growth—
+          with systems designed to be scalable, modern, and aligned to the realities of the businesses we serve.
         </motion.p>
 
         <motion.div
@@ -38,24 +38,24 @@ export default function SignatureVision() {
           className="vision-columns"
         >
           <div>
-            <h3>01. Narrative First</h3>
+            <h3>01. Focus</h3>
             <p>
-              Cinematic storyboarding ensures every surface serves your core promise. We align executive storytelling
-              with interface choreography.
+              We start with a clear understanding of business needs, operational friction, and the outcomes that matter
+              most before building the right solution.
             </p>
           </div>
           <div>
-            <h3>02. Couture Engineering</h3>
+            <h3>02. Delivery</h3>
             <p>
-              Event-driven systems, predictive infrastructure, and observability woven in from day one. Beauty matched
-              with bulletproof scale.
+              From requirements analysis and design to development, deployment, and support, we deliver end-to-end
+              digital systems with structure, clarity, and accountability.
             </p>
           </div>
           <div>
-            <h3>03. Forever Concierge</h3>
+            <h3>03. Values</h3>
             <p>
-              Quarterly growth councils, proactive iteration, and rapid-response support. Launch is simply the
-              premiere.
+              Professionalism, technical excellence, client-focused service delivery, and ethical business practices are
+              the standards behind every engagement.
             </p>
           </div>
         </motion.div>

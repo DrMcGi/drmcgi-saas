@@ -712,6 +712,7 @@ export default function CinematicWebGL() {
       }
 
       const start = performance.now();
+      let paused = document.hidden;
 
       const tick = (now: number) => {
         if (disposed) return;
@@ -784,10 +785,16 @@ export default function CinematicWebGL() {
         ribbonMat.opacity = currentRibbonOpacity;
 
         renderer.render(scene, camera);
-        frame = window.requestAnimationFrame(tick);
+        if (!paused) frame = window.requestAnimationFrame(tick);
       };
 
-      frame = window.requestAnimationFrame(tick);
+      const handleVisibilityChange = () => {
+        paused = document.hidden;
+        if (!paused && !disposed) frame = window.requestAnimationFrame(tick);
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      if (!paused) frame = window.requestAnimationFrame(tick);
 
       const doCleanup = () => {
         disposed = true;
@@ -795,6 +802,7 @@ export default function CinematicWebGL() {
         window.removeEventListener("resize", setSize);
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerdown", onFirstPointerDown);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
 
         if (gyroActive) {
           window.removeEventListener("deviceorientation", onDeviceOrientation);

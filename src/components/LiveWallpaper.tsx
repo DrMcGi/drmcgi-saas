@@ -1,26 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-
-function isLowPowerDevice() {
-  if (typeof window === "undefined") return false;
-  const nav = navigator as Navigator & {
-    deviceMemory?: number;
-    connection?: { saveData?: boolean };
-  };
-
-  const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : undefined;
-  const mem = typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined;
-  const saveData = Boolean(nav.connection?.saveData);
-
-  const coarsePointer = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
-  const smallViewport = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 640px)").matches;
-  const mobileLikeDevice = coarsePointer || smallViewport;
-
-  // Keep desktop visuals vivid even on modest hardware; reserve low-power mode for mobile/data-saver contexts.
-  return saveData || (mobileLikeDevice && ((typeof cores === "number" && cores <= 4) || (typeof mem === "number" && mem <= 4)));
-}
+import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 
 type WalkerType = "bot" | "scout" | "terminal" | "cheese" | "pizza";
 
@@ -34,56 +15,70 @@ type WalkerConfig = {
   scale: number;
 };
 
-type WalkerProps = WalkerConfig & { disableMotion: boolean };
+type WalkerProps = Omit<WalkerConfig, "id">;
+
+function isLowPowerDevice() {
+  if (typeof window === "undefined") return false;
+  const nav = navigator as Navigator & {
+    deviceMemory?: number;
+    connection?: { saveData?: boolean };
+  };
+
+  const cores = navigator.hardwareConcurrency;
+  const memory = nav.deviceMemory;
+  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+  return Boolean(nav.connection?.saveData) || (isCoarsePointer && ((cores !== undefined && cores <= 4) || (memory !== undefined && memory <= 4)));
+}
 
 const WALKERS: WalkerConfig[] = [
-  { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 1 },
-  { id: "bot-b", type: "bot", yRange: [22, 54], driftRange: [-6, 7], speedRange: [20, 28], pauseRange: [3200, 6200], scale: 0.9 },
-  { id: "scout", type: "scout", yRange: [12, 36], driftRange: [-5, 5], speedRange: [16, 22], pauseRange: [2400, 4600], scale: 0.78 },
-  { id: "terminal", type: "terminal", yRange: [58, 82], driftRange: [-4, 6], speedRange: [22, 32], pauseRange: [3400, 6200], scale: 1.08 },
-  { id: "cheese", type: "cheese", yRange: [18, 44], driftRange: [-6, 5], speedRange: [20, 28], pauseRange: [2800, 5200], scale: 0.92 },
-  { id: "cheese-b", type: "cheese", yRange: [36, 68], driftRange: [-5, 5], speedRange: [24, 32], pauseRange: [3600, 6800], scale: 0.88 },
-  { id: "pizza", type: "pizza", yRange: [44, 72], driftRange: [-7, 6], speedRange: [24, 34], pauseRange: [3200, 5800], scale: 1 }
+  { id: "bot", type: "bot", yRange: [30, 62], driftRange: [-8, 8], speedRange: [18, 26], pauseRange: [2600, 5200], scale: 0.65 },
+  { id: "scout", type: "scout", yRange: [12, 36], driftRange: [-5, 5], speedRange: [16, 22], pauseRange: [2400, 4600], scale: 0.507 },
+  { id: "terminal", type: "terminal", yRange: [58, 82], driftRange: [-4, 6], speedRange: [22, 32], pauseRange: [3400, 6200], scale: 0.702 },
+  { id: "cheese", type: "cheese", yRange: [18, 44], driftRange: [-6, 5], speedRange: [20, 28], pauseRange: [2800, 5200], scale: 0.598 },
+  { id: "pizza", type: "pizza", yRange: [44, 72], driftRange: [-7, 6], speedRange: [24, 34], pauseRange: [3200, 5800], scale: 0.65 }
 ];
 
-function hashToUnit(seed: string) {
-  let h1 = 0xdeadbeef ^ seed.length;
-  let h2 = 0x41c6ce57 ^ seed.length;
-
-  for (let i = 0; i < seed.length; i++) {
-    const ch = seed.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
-  h2 = Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-
-  const combined = (h1 ^ h2) >>> 0;
-  return combined / 4294967296;
+function randomBetween(min: number, max: number) {
+  return Math.random() * (max - min) + min;
 }
 
-function randomBetweenSeed(base: string, min: number, max: number) {
-  return hashToUnit(base) * (max - min) + min;
+function sleep(duration: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, duration);
+  });
 }
 
-function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, disableMotion }: WalkerProps) {
+function Walker({ type, yRange, driftRange, speedRange, pauseRange, scale }: WalkerProps) {
+  const controls = useAnimationControls();
   const [minY, maxY] = yRange;
   const [minDrift, maxDrift] = driftRange;
   const [minSpeed, maxSpeed] = speedRange;
   const [minPause, maxPause] = pauseRange;
 
-  const motionConfig = useMemo(() => {
-    const baseKey = `${id}-${type}`;
-    const startY = randomBetweenSeed(`${baseKey}:start`, minY, maxY);
-    const drift = randomBetweenSeed(`${baseKey}:drift`, minDrift, maxDrift);
-    const endY = startY + drift;
-    const duration = randomBetweenSeed(`${baseKey}:speed`, minSpeed, maxSpeed);
-    const repeatDelay = randomBetweenSeed(`${baseKey}:pause`, minPause, maxPause) / 1000;
-    const delayOffset = randomBetweenSeed(`${baseKey}:offset`, 0, 1.5);
+  useEffect(() => {
+    let active = true;
 
-    return { startY, endY, drift, duration, repeatDelay, delayOffset };
-  }, [id, type, minDrift, maxDrift, minPause, maxPause, minSpeed, maxSpeed, minY, maxY]);
+    const loop = async () => {
+      while (active) {
+        const startY = randomBetween(minY, maxY);
+        const drift = randomBetween(minDrift, maxDrift);
+        const duration = randomBetween(minSpeed, maxSpeed);
+        const pause = randomBetween(minPause, maxPause);
+
+        controls.set({ x: "-22vw", y: `${startY}vh`, opacity: 0, rotate: 0, scale });
+        await controls.start({ opacity: 1, transition: { duration: 0.75, ease: "easeOut" } });
+        await controls.start({ x: "118vw", y: `${startY + drift}vh`, rotate: drift / 2, transition: { duration, ease: "linear" } });
+        await controls.start({ opacity: 0, transition: { duration: 0.6, ease: "easeIn" } });
+        await sleep(pause);
+      }
+    };
+
+    loop();
+    return () => {
+      active = false;
+    };
+  }, [controls, minY, maxY, minDrift, maxDrift, minSpeed, maxSpeed, minPause, maxPause, scale]);
 
   let content: ReactNode = null;
 
@@ -153,38 +148,8 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
     );
   }
 
-  const motionProps = disableMotion
-    ? {
-        initial: { opacity: 0.62, x: `${(motionConfig.startY % 36) - 18}vw`, y: `${motionConfig.startY}vh`, scale },
-        animate: { opacity: 0.5, x: `${(motionConfig.startY % 36) - 12}vw`, y: `${motionConfig.startY}vh`, scale },
-        transition: { duration: 7, ease: "easeInOut" as const, repeat: Infinity, repeatType: "mirror" as const }
-      }
-    : {
-        initial: { opacity: 0, x: "-22vw", y: `${motionConfig.startY}vh`, scale },
-        animate: {
-          x: ["-22vw", "118vw"],
-          y: [`${motionConfig.startY}vh`, `${motionConfig.endY}vh`],
-          opacity: [0, 0.95, 0.95, 0],
-          rotate: [0, motionConfig.drift / 2, motionConfig.drift / 2, motionConfig.drift / 2],
-          scale
-        },
-        transition: {
-          duration: motionConfig.duration,
-          ease: "linear" as const,
-          repeat: Infinity,
-          repeatType: "loop" as const,
-          repeatDelay: motionConfig.repeatDelay,
-          times: [0, 0.04, 0.96, 1],
-          delay: motionConfig.delayOffset
-        }
-      };
-
   return (
-    <motion.div
-      className={`wallpaper-walker ${type}`}
-      style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
-      {...motionProps}
-    >
+    <motion.div className={`wallpaper-walker ${type}`} animate={controls} initial={false}>
       {content}
     </motion.div>
   );
@@ -192,89 +157,71 @@ function Walker({ id, type, yRange, driftRange, speedRange, pauseRange, scale, d
 
 export default function LiveWallpaper() {
   const prefersReducedMotion = useReducedMotion();
+  const [clip, setClip] = useState({ top: 0, bottom: 0 });
   const [lowPower, setLowPower] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    const timer = window.setTimeout(() => {
-      if (cancelled) return;
-      setLowPower(isLowPowerDevice());
-    }, 0);
+    const frame = window.requestAnimationFrame(() => setLowPower(isLowPowerDevice()));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateClip = () => {
+      frame = 0;
+      const hero = document.querySelector<HTMLElement>(".hero-shell");
+      const footer = document.querySelector<HTMLElement>(".footer-shell");
+      const top = hero ? Math.min(window.innerHeight, Math.max(0, hero.getBoundingClientRect().bottom)) : 0;
+      const bottom = footer ? Math.min(window.innerHeight, Math.max(0, window.innerHeight - footer.getBoundingClientRect().top)) : 0;
+
+      setClip((previous) => (previous.top === top && previous.bottom === bottom ? previous : { top, bottom }));
+    };
+
+    updateClip();
+    const scheduleClipUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateClip);
+    };
+
+    window.addEventListener("scroll", scheduleClipUpdate, { passive: true });
+    window.addEventListener("resize", updateClip);
 
     return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleClipUpdate);
+      window.removeEventListener("resize", updateClip);
     };
   }, []);
 
-  const disableMotion = Boolean(prefersReducedMotion) || lowPower;
-
-  const fxVars = useMemo(() => {
-    const alpha = lowPower ? 0.9 : 1;
-    const filter = disableMotion
-      ? "saturate(1.5) contrast(1.34) brightness(1.27)"
-      : "saturate(1.98) contrast(1.5) brightness(1.32)";
-
-    return {
-      "--wallpaper-alpha": String(alpha),
-      "--wallpaper-filter": filter
-    } as React.CSSProperties;
-  }, [lowPower, disableMotion]);
-
   const activeWalkers = useMemo(() => {
-    if (!lowPower) return WALKERS;
-
-    const keep = new Set(["bot", "cheese", "pizza"]);
-    const kept = WALKERS.filter((walker) => keep.has(walker.id));
-    return kept.length ? kept : WALKERS.slice(0, 3);
-  }, [lowPower]);
+    if (!lowPower && !prefersReducedMotion) return WALKERS;
+    return WALKERS.filter((walker) => walker.id === "bot");
+  }, [lowPower, prefersReducedMotion]);
 
   return (
-    <div className="live-wallpaper" aria-hidden="true" style={fxVars}>
+    <div className="live-wallpaper" aria-hidden style={{ clipPath: `inset(${clip.top}px 0 ${clip.bottom}px)` }}>
       <motion.div
         className="atlas-orb"
-        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
-        initial={{ opacity: 0 }}
-        animate={
-          disableMotion
-            ? { opacity: 0.28, x: "-4%", y: "-12%", rotate: 0 }
-            : { opacity: [0.18, 0.32, 0.22, 0.18], x: ["-8%", "12%", "18%", "-4%"], y: ["-14%", "-4%", "-12%", "-14%"], rotate: [0, 8, -6, 0] }
-        }
-        transition={disableMotion ? { duration: 1 } : { duration: 48, repeat: Infinity, ease: "easeInOut" as const }}
+        animate={{ x: ["-8%", "12%", "18%", "-4%"], y: ["-14%", "-4%", "-12%", "-14%"], rotate: [0, 8, -6, 0], opacity: [0.18, 0.32, 0.22, 0.18] }}
+        transition={{ duration: 48, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <motion.div
-        className="atlas-rings"
-        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
-        initial={{ opacity: 0.4 }}
-        animate={disableMotion ? { opacity: 0.4, rotate: 0 } : { opacity: 1, rotate: 360 }}
-        transition={disableMotion ? { duration: 1 } : { duration: 68, repeat: Infinity, ease: "linear" as const }}
-      />
+      <motion.div className="atlas-rings" animate={{ rotate: 360 }} transition={{ duration: 68, repeat: Infinity, ease: "linear" }} />
 
       <motion.div
         className="atlas-grid"
-        style={{ willChange: disableMotion ? undefined : "background-position, opacity" }}
-        initial={{ opacity: 0.12 }}
-        animate={
-          disableMotion
-            ? { opacity: 0.18, backgroundPosition: "0% 0%" }
-            : { opacity: [0.16, 0.28, 0.16], backgroundPosition: ["0% 0%", "80% 80%", "0% 0%"] }
-        }
-        transition={disableMotion ? { duration: 1.2 } : { duration: 54, repeat: Infinity, ease: "easeInOut" as const }}
+        animate={{ backgroundPosition: ["0% 0%", "80% 80%", "0% 0%"], opacity: [0.16, 0.28, 0.16] }}
+        transition={{ duration: 54, repeat: Infinity, ease: "easeInOut" }}
       />
 
       <motion.div
         className="atlas-constellation"
-        style={{ willChange: disableMotion ? undefined : "transform, opacity" }}
-        initial={{ opacity: 0.1 }}
-        animate={
-          disableMotion ? { opacity: 0.18, x: "-2%", y: "-1%" } : { opacity: [0.12, 0.3, 0.12], x: ["-6%", "6%", "-6%"], y: ["-2%", "4%", "-2%"] }
-        }
-        transition={disableMotion ? { duration: 1.2 } : { duration: 62, repeat: Infinity, ease: "easeInOut" as const }}
+        animate={{ x: ["-6%", "6%", "-6%"], y: ["-2%", "4%", "-2%"], opacity: [0.12, 0.3, 0.12] }}
+        transition={{ duration: 62, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {activeWalkers.map((walker) => (
-        <Walker key={walker.id} disableMotion={disableMotion} {...walker} />
+      {activeWalkers.map(({ id, ...config }) => (
+        <Walker key={id} {...config} />
       ))}
     </div>
   );

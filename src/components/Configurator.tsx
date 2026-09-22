@@ -220,15 +220,15 @@ export default function Configurator() {
                 <span style={{ width: `${percent}%` }} />
               </div>
               <div className="flex items-center justify-between text-xs uppercase tracking-[0.32em] text-white/60">
-                <span>{percent}% sculpted</span>
+                <span>{percent}% configured</span>
                 <span>{milestone}</span>
               </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-[rgba(8,12,18,0.7)] p-4 space-y-2 text-xs tracking-[0.28em] uppercase text-white/60">
-              <div>• Dedicated technical director</div>
-              <div>• Concierge launch rehearsal</div>
-              <div>• Post-launch growth council</div>
+              <div>• Technical director alignment</div>
+              <div>• Launch rehearsal & delivery guidance</div>
+              <div>• Post-launch growth advisory</div>
             </div>
           </motion.aside>
         </div>

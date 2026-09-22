@@ -3,45 +3,45 @@ import { motion } from "framer-motion";
 import { useApp } from "@/lib/store";
 
 const FEATURE_MAP: Record<string, string> = {
-  responsive: "Responsive design",
-  seo: "Search equity",
-  cms: "Editorial control",
-  luxuryUI: "Luxury UI system",
-  ecommerce: "Commerce engine",
-  analytics: "Insight stack",
-  mvp: "MVP core",
-  api: "Scalable API",
-  cicd: "CI/CD runway",
-  observability: "Observability",
-  multitenant: "Multi-tenant",
-  payments: "Payments",
-  ai: "AI concierge",
+  responsive: "Responsive business websites",
+  seo: "SEO-friendly builds",
+  cms: "CMS and content control",
+  luxuryUI: "Modern UX direction",
+  ecommerce: "Commerce-ready experiences",
+  analytics: "Reporting and insight layers",
+  mvp: "MVP foundation",
+  api: "API and workflow design",
+  cicd: "Deployment and release support",
+  observability: "Operational visibility",
+  multitenant: "Scalable architecture",
+  payments: "Payments and transactions",
+  ai: "AI-assisted efficiency",
   integrations: "Systems integrations",
-  ops: "Automation ops",
-  security: "Security layer",
-  workflows: "Enterprise workflows",
-  offline: "Offline sync",
+  ops: "Automation workflows",
+  security: "Security and access controls",
+  workflows: "Business process automation",
+  offline: "Operational continuity",
   dashboards: "Executive dashboards"
 };
 
 const PACKAGES = [
   {
     id: "pkg-web",
-    title: "Signature Web Experience",
-    copy: "Editorial-grade websites with cinematic motion, luxe storytelling, and resilient SEO foundations.",
-    feats: ["luxuryUI", "responsive", "cms", "analytics"]
+    title: "Business Website Design",
+    copy: "Professional websites and digital storefronts built to improve brand trust, client engagement, and online visibility.",
+    feats: ["luxuryUI", "responsive", "cms", "seo"]
   },
   {
     id: "pkg-saas",
-    title: "Flagship SaaS Platform",
-    copy: "MVP to scale with couture dashboards, automation, and observability built for executive confidence.",
-    feats: ["mvp", "api", "cicd", "observability", "payments"]
+    title: "SaaS & Systems Build",
+    copy: "Custom software and SaaS platforms for internal operations, customer journeys, and business systems that need to scale cleanly.",
+    feats: ["mvp", "api", "integrations", "dashboards", "security"]
   },
   {
     id: "pkg-custom",
-    title: "Private Client Systems",
-    copy: "Exclusive applications with AI concierge, enterprise workflows, and custom integration tapestries.",
-    feats: ["ai", "integrations", "security", "workflows", "dashboards"]
+    title: "Digital Transformation Support",
+    copy: "ICT consulting, workflow automation, reporting tools, and system support designed to strengthen how teams operate and make decisions.",
+    feats: ["ai", "ops", "workflows", "analytics", "cicd"]
   }
 ];
 
@@ -60,7 +60,7 @@ export default function Packages() {
             transition={{ duration: 0.9 }}
             className="text-3xl md:text-4xl"
           >
-            Luxury software. Real business impact.
+            Practical digital solutions for businesses that need systems to work.
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -69,8 +69,8 @@ export default function Packages() {
             transition={{ duration: 0.9, delay: 0.1 }}
             className="text-white/70 max-w-2xl"
           >
-            We don&apos;t ship features. We orchestrate experiences that feel inevitable—start with a curated suite and
-            refine every detail in the configurator.
+            From website builds and SaaS platforms to automation and day-to-day operational support, each package is
+            shaped around the real needs of the business.
           </motion.p>
         </div>
 

@@ -75,13 +75,19 @@ export default function Hero() {
         transition={{ duration: 0.9 }}
         className="hero-content"
       >
+        <img
+          src="/logo.svg"
+          alt="DrMcGi's SaaS Atelier logo"
+          className="mx-auto mb-6 block w-full max-w-[560px]"
+        />
+
         <motion.span
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.7 }}
           className="hero-kicker"
         >
-          Luxury SaaS atelier for iconic brands
+          Software development. SaaS design. Business clarity.
         </motion.span>
 
         <motion.h1
@@ -90,9 +96,9 @@ export default function Hero() {
           transition={{ delay: 0.35, duration: 0.9 }}
           className="hero-title"
         >
-          <span className="block">Luxury software.</span>
+          <span className="block">Focused delivery.</span>
           <span className="block">
-            <ShimmerText>Real business impact.</ShimmerText>
+            <ShimmerText>Professional systems.</ShimmerText>
           </span>
         </motion.h1>
 
@@ -102,7 +108,8 @@ export default function Hero() {
           transition={{ delay: 0.55, duration: 0.8 }}
           className="hero-subtitle"
         >
-          We don&apos;t ship features. We orchestrate experiences that feel inevitable—from MVP to enterprise scale.
+          DrMcGi&apos;s SaaS Atelier builds scalable software, digital systems, and SaaS platforms that help businesses
+          operate smarter, move faster, and grow with confidence.
         </motion.p>
 
         <motion.p
@@ -111,7 +118,7 @@ export default function Hero() {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="hero-subtitle text-sm text-white/60"
         >
-          Software couture for leaders who refuse the ordinary. Every interaction, handcrafted.
+          Professionalism, technical excellence, and client-focused service delivery at the heart of every solution.
         </motion.p>
 
         <motion.div

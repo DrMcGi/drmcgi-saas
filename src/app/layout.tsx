@@ -6,7 +6,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 const siteUrl = getSiteUrl();
 const logoUrl = new URL("/logo.svg", siteUrl).toString();
-const faviconUrl = new URL("/favicon.svg", siteUrl).toString();
+const faviconUrl = new URL("/favicon.ico", siteUrl).toString();
 const businessPhoneE164 = "+27649211745";
 const businessName = "DrMcGi's SaaS Atelier (Pty) Ltd";
 const businessRegistrationNumber = "2026/093277/07";
@@ -69,10 +69,15 @@ export const metadata: Metadata = {
       "max-video-preview": -1
     }
   },
+  manifest: "/manifest.webmanifest",
   icons: {
-    icon: faviconUrl,
+    icon: [
+      { url: faviconUrl, sizes: "any" },
+      { url: "/app-icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/app-icon-512.png", type: "image/png", sizes: "512x512" }
+    ],
     shortcut: faviconUrl,
-    apple: faviconUrl
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }]
   },
   openGraph: {
     type: "website",

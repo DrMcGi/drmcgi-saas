@@ -9,33 +9,41 @@ type Study = {
   stack: string;
   stats: string[];
   img: string;
+  href: string;
+  siteLabel: string;
   steps: string[];
 };
 
 const CASES: Study[] = [
   {
-    title: "Nzuri Café",
-    copy: "Cinematic ordering flows and dynamic pricing engine boosted dwell time and average receipt by 38%.",
-    stack: "Vite • Tailwind • Supabase",
-    stats: ["Orders ↑54%", "Serve time ↓21%", "NPS +31"],
-    img: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80",
-    steps: ["Problem: Manual pricing & long queues","Solution: Motion-led ordering and realtime updates","Impact: Faster orders, delighted clientele"]
+    title: "LEM Projects",
+    copy: "Strategic project storytelling and portfolio visibility designed to present the LEM group’s operating footprint with clarity, authority, and brand confidence.",
+    stack: "Next.js • Brand systems • Portfolio experience",
+    stats: ["Live site", "Executive polish", "Strategic narrative"],
+    img: "/lem-projects-logo.png",
+    href: "https://lemprojects.co.za",
+    siteLabel: "Visit LEM Projects",
+    steps: ["Problem: Group business story needed a cleaner strategic presentation","Solution: Premium portfolio experience with strong corporate identity","Impact: Cohesive, credible showcase for the broader LEM network"]
   },
   {
-    title: "Trident Markets",
-    copy: "Institutional-grade trading dashboard with clarity-first data visualisation and compliance-ready audit trails.",
-    stack: "Next.js • NestJS • PostgreSQL",
-    stats: ["Assets ↑2.1x", "Downtime 0.01%", "Teams onboarded 6"],
-    img: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80",
-    steps: ["Problem: Fragmented trading tools","Solution: Unified real-time platform","Impact: Confident decision velocity"]
+    title: "PCM Management Tool",
+    copy: "Operational management dashboard for machine tracking, progress status, schedule visibility, and site-level decision support in a mining environment.",
+    stack: "Next.js • Excel data flow • Admin controls",
+    stats: ["Live app", "Operational clarity", "Site reporting"],
+    img: "/pcm-logo.png",
+    href: "https://pcm-management-tool.vercel.app",
+    siteLabel: "Open PCM app",
+    steps: ["Problem: Spreadsheet-heavy reporting and slow updates","Solution: Live operational dashboard with secure admin workflows","Impact: Cleaner oversight and faster decisions on the ground"]
   },
   {
-    title: "TaxiLink",
-    copy: "Transparent mobility marketplace with trust-driven design, predictive pricing, and multi-city expansion strategy.",
-    stack: "Next.js • Prisma • Stripe",
-    stats: ["Trips ↑3.4x", "Cities 12", "Driver retention 89%"],
-    img: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80",
-    steps: ["Problem: Informal transport chaos","Solution: Transparent booking with concierge support","Impact: Safer, trusted mobility network"]
+    title: "Cheese by DrMcGi",
+    copy: "Premium commerce and brand experience currently being shaped as a polished digital product, with design-led refinement and an active roadmap toward launch.",
+    stack: "Next.js • Supabase • Design system",
+    stats: ["In progress", "Brand-led", "Product iteration"],
+    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=80",
+    href: "#contact",
+    siteLabel: "In progress",
+    steps: ["Problem: A premium commerce concept needed stronger product positioning","Solution: Luxury commerce concepts shaped around brand and UX refinement","Impact: A scalable foundation for the next launch phase"]
   }
 ];
 
@@ -80,7 +88,7 @@ export default function CaseStudies() {
                 alt={study.title}
                 width={1200}
                 height={800}
-                className="case-media"
+                className={`case-media ${study.title === "LEM Projects" || study.title === "PCM Management Tool" ? "case-media-logo" : ""}`}
                 priority={index === 0}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
                 quality={85}
@@ -100,9 +108,17 @@ export default function CaseStudies() {
 
               <div className="case-stack">Stack: {study.stack}</div>
 
-              <div>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={study.href}
+                  target={study.href.startsWith("http") ? "_blank" : undefined}
+                  rel={study.href.startsWith("http") ? "noreferrer" : undefined}
+                  className="btn-ghost text-[10px]"
+                >
+                  {study.siteLabel}
+                </a>
                 <button
-                  className="btn-ghost text-xs"
+                  className="btn-ghost text-[10px]"
                   onClick={() => {
                     window.dispatchEvent(
                       new CustomEvent("open-storyboard", {

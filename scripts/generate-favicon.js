@@ -96,10 +96,7 @@ async function main() {
 
   crcTable = createCrcTable();
 
-  const w = 64;
-  const h = 64;
-
-  const png = createPng(w, h, (x, y, width, height) => {
+  const createIcon = (w, h) => createPng(w, h, (x, y, width, height) => {
     const bg = [2, 4, 9];
     const cx = width * 0.5;
     const cy = height * 0.5;
@@ -128,9 +125,13 @@ async function main() {
     return [r, g, b, a];
   }, zlib);
 
+  const png = createIcon(64, 64);
   const ico = createIcoFromPng(png);
   fs.writeFileSync("public/favicon.ico", ico);
-  console.log("Generated public/favicon.ico");
+  fs.writeFileSync("public/app-icon-192.png", createIcon(192, 192));
+  fs.writeFileSync("public/app-icon-512.png", createIcon(512, 512));
+  fs.writeFileSync("public/apple-touch-icon.png", createIcon(180, 180));
+  console.log("Generated browser and app icons in public/");
 }
 
 main().catch((error) => {

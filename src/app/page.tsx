@@ -16,6 +16,7 @@ import LiveWallpaper from "@/components/LiveWallpaper";
 import BackToTop from "@/components/BackToTop";
 import GuidanceBot from "@/components/GuidanceBot";
 import CinematicWebGLClient from "@/components/CinematicWebGLClient";
+import CompanyProfile from "@/components/CompanyProfile";
 
 export default function Page() {
   return (
@@ -27,6 +28,7 @@ export default function Page() {
       <GuidanceBot />
       <main id="home" className="pt-20">
         <Hero />
+        <CompanyProfile />
         <SignatureVision />
         <ExperienceAtlas />
         <Packages />
