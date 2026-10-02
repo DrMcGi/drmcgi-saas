@@ -9,8 +9,8 @@ type Study = {
   stack: string;
   stats: string[];
   img: string;
-  href: string;
-  siteLabel: string;
+  href?: string;
+  siteLabel?: string;
   steps: string[];
 };
 
@@ -31,8 +31,6 @@ const CASES: Study[] = [
     stack: "Next.js • Excel data flow • Admin controls",
     stats: ["Live app", "Operational clarity", "Site reporting"],
     img: "/pcm-logo.png",
-    href: "https://pcm-management-tool.vercel.app",
-    siteLabel: "Open PCM app",
     steps: ["Problem: Spreadsheet-heavy reporting and slow updates","Solution: Live operational dashboard with secure admin workflows","Impact: Cleaner oversight and faster decisions on the ground"]
   },
   {
@@ -109,14 +107,16 @@ export default function CaseStudies() {
               <div className="case-stack">Stack: {study.stack}</div>
 
               <div className="flex flex-wrap gap-3">
-                <a
-                  href={study.href}
-                  target={study.href.startsWith("http") ? "_blank" : undefined}
-                  rel={study.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="btn-ghost text-[10px]"
-                >
-                  {study.siteLabel}
-                </a>
+                {study.href && study.siteLabel && (
+                  <a
+                    href={study.href}
+                    target={study.href.startsWith("http") ? "_blank" : undefined}
+                    rel={study.href.startsWith("http") ? "noreferrer" : undefined}
+                    className="btn-ghost text-[10px]"
+                  >
+                    {study.siteLabel}
+                  </a>
+                )}
                 <button
                   className="btn-ghost text-[10px]"
                   onClick={() => {
